@@ -1,0 +1,85 @@
+/* Set full height for the entire compiler page */
+.compiler {
+  height: 100vh; /* Viewport height */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navbar takes fixed height */
+.compiler .navbar {
+  background-color: red;
+  height: 10vh; /* 10% of the viewport */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Horizontal split container */
+.compiler .horizontal {
+  display: flex;
+  height: 90vh; /* Remaining height after navbar */
+  width: 100%;
+}
+
+/* Problem Statement styling */
+.compiler .probState {
+  background-color: beige;
+  padding: 10px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+/* Code editor and test cases split container (vertical split) */
+.compiler .code-testcases {
+  display: flex;
+  flex-direction: column; /* For vertical layout */
+  height: 100%;
+}
+
+/* Code editor styling */
+.compiler .codeeditor {
+  background-color: cadetblue;
+  flex-grow: 1; /* Takes available vertical space */
+  padding: 10px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+/* Test cases styling */
+.compiler .testcases {
+  background-color: white;
+  flex-grow: 1; /* Takes available vertical space */
+  padding: 10px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+/* Code editor content styling */
+.editor {
+  width: 100%;
+  height: 85%; /* Fill available height */
+  border: 1px solid #ccc;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 14px;
+  background-color: #f4f4f4;
+  outline: none;
+  overflow-y: auto;
+}
+
+/* Hide scrollbar */
+.editor::-webkit-scrollbar {
+  display: none;
+}
+
+.editor {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+body{
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+}

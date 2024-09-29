@@ -63,7 +63,7 @@ export default function CompilerPage() {
         <Box
           className="probState p-3"
           width={`${dividerPosition}px`} // Left box width based on divider position
-          bg="samurai.lightGray"
+          bg="#555555"
           border="1px solid"
           borderColor="samurai.steel"
           borderRadius="md"

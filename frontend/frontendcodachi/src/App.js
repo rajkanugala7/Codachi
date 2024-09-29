@@ -4,11 +4,11 @@ import theme from "./theme";
 import CompilerPage from "./components/CompilerPage";
 
 function App() {
-  return (
+  return (  
     <ChakraProvider theme={theme}>
       <CompilerPage />
     </ChakraProvider>
-  );
+   );
 }
 
 export default App;

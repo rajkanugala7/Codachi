@@ -1,8 +1,24 @@
 import React, { useState, useRef } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 import Editor from "@monaco-editor/react";
+import LanguageSelector from "./LanguageSelector";
+import { LANGUAGES } from "../constants"; // Assuming your language constants are in constants.js
 
 export default function CompilerPage() {
+  const [code, setCode] = useState(LANGUAGES["Java"].codeSnippet); // Initialize with Java code snippet
+  const [language, setLanguage] = useState("Java");
+  const editorRef = useRef(null);
+
+  const onMount = (editor) => {
+    editorRef.current = editor;
+    editor.focus();
+  };
+
+  const onSelect = (selectedLanguage) => {
+    setLanguage(selectedLanguage);
+    setCode(LANGUAGES[selectedLanguage].codeSnippet); // Set the code snippet based on selected language
+  };
+
   const [dividerPosition, setDividerPosition] = useState(650); // Initial divider position in pixels
   const containerRef = useRef(null); // Reference to the container
 
@@ -37,8 +53,8 @@ export default function CompilerPage() {
   return (
     <Box className="compiler" bg="samurai.gray" color="samurai.white" h="100vh" p={4}>
       {/* Navbar */}
-      <Box className="navbar rounded" bg="samurai.black" color="samurai.gold"  p={4}>
-        <h1 style={{fontSize:"1.2rem"}}>CODACHI</h1>
+      <Box className="navbar rounded" bg="samurai.black" color="samurai.gold" p={4}>
+        <h1 style={{ fontSize: "1.2rem" }}>CODACHI</h1>
       </Box>
 
       {/* Main Content: Problem Statement and Code Editor */}
@@ -53,25 +69,13 @@ export default function CompilerPage() {
           borderRadius="md"
           p={4}
           overflowY="auto"
-
         >
           <h2>Problem Statement</h2>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo ipsa sed, modi nisi, sit dolorem aliquid soluta repellendus, ad voluptate inventore debitis assumenda cumque. Optio natus ducimus amet sunt.
-            {/* Add more content as needed */}
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Id hic aut necessitatibus possimus repellat excepturi quasi obcaecati incidunt quia ad illum suscipit sunt sed itaque illo beatae, voluptates qui rerum?
-            Praesentium earum ipsam harum, accusantium velit cum ex at natus, inventore vero placeat eius. Voluptas nulla asperiores fuga ut deserunt esse possimus consequatur natus veritatis nesciunt enim similique, doloribus molestias.
-            Minus, perferendis necessitatibus ab quod voluptates, explicabo nobis, rem aliquam nihil totam quidem? Libero porro eveniet odit quos cupiditate non ipsam. Asperiores perferendis voluptatum corporis eligendi deleniti minima porro incidunt!
-            Odit impedit quibusdam earum porro in repudiandae voluptatibus natus qui quas quia obcaecati illum iste veritatis, deserunt repellendus laudantium ab. Ratione quod eos totam nesciunt consequuntur ipsa exercitationem aspernatur sequi.
-            Maiores fuga molestiae aut natus consequuntur esse assumenda, inventore dolore culpa consectetur nihil accusantium, quis placeat provident laboriosam deleniti omnis dolor, eaque odit quas accusamus illum. Vero dolores iusto consequatur?
-         
-             Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem sint quos error architecto in, itaque consequuntur optio perspiciatis, obcaecati asperiores sit magnam ipsum ea a pariatur, rerum similique eligendi iste?
-             Placeat dolor totam facere eligendi. Exercitationem doloremque cupiditate sequi voluptas culpa nihil, sint incidunt similique sunt inventore! Velit exercitationem eveniet architecto rem error, accusamus sunt ab et repellat fugiat nulla!
-             Autem veritatis incidunt perspiciatis ad temporibus exercitationem sunt id labore deserunt tempora saepe repellendus quidem cupiditate voluptatem totam nobis, nam ut repellat laudantium. Sequi sit, sapiente debitis molestias ea magnam.
-             Dicta, officia autem! Aliquam impedit dignissimos dolor cupiditate molestias, quasi deserunt nemo blanditiis unde aperiam suscipit illum quam dolorem id quos esse minus obcaecati tempora doloribus, aliquid numquam consectetur? Numquam!
-             Sapiente veritatis placeat libero ab, debitis eius iusto numquam voluptates blanditiis facere esse deserunt dolores unde amet provident possimus nisi doloribus praesentium molestiae dolor aspernatur culpa! Voluptatibus accusamus nisi nulla!
-         
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo ipsa sed, modi nisi, sit dolorem aliquid
+            soluta repellendus, ad voluptate inventore debitis assumenda cumque. Optio natus ducimus amet sunt.
           </p>
+          {/* Add more content as needed */}
         </Box>
 
         {/* Resizable Divider */}
@@ -91,12 +95,15 @@ export default function CompilerPage() {
           border="1px solid"
           borderColor="samurai.steel"
           borderRadius="md"
-          
         >
+          {/* Language Selector */}
+          <LanguageSelector language={language} onSelect={onSelect} />
+          
+          {/* Code Editor */}
           <Editor
             height="80%"
-            defaultLanguage="java"
-            defaultValue="// Start typing your code..."
+            language={language.toLowerCase()}
+            value={code}
             theme="vs-dark"
             options={{
               minimap: { enabled: false },
@@ -104,16 +111,18 @@ export default function CompilerPage() {
               fontFamily: "monospace",
               scrollBeyondLastLine: false,
             }}
+            onChange={(value) => setCode(value)}
+            onMount={onMount}
           />
-     
-            <div className="p-4">
+
+          {/* Test Cases */}
+          <div className="p-4">
             <h1>Test Cases</h1>
-            <p style={{color:"red"}}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae quam laborum autem libero ratione dolore esse aliquam, iste quasi non accusamus, reprehenderit dignissimos sed dolorem modi. Voluptas sunt aliquam maxime!
-            Dolores ex excepturi magni aut dolor pariatur? Laudantium eveniet inventore quisquam, quasi magnam consectetur ad asperiores velit non provident aperiam id! Repellendus earum quo voluptatum tempore neque? Suscipit, placeat ratione.
-            Officiis aspernatur qui facilis necessitatibus quia cum doloremque sit neque dolore accusantium, amet aliquam aliquid vitae deserunt esse, optio nisi fuga! Eos minus aspernatur quidem asperiores, ipsa inventore eligendi autem.
-            Quos similique, fuga iusto facere harum tenetur, itaque aut quod incidunt ducimus non illo dolorem exercitationem amet. Voluptatum minima sint eligendi quasi quibusdam odit suscipit earum asperiores, velit esse sunt.
-            Consequuntur sint animi beatae non voluptatibus commodi aspernatur nostrum deserunt, sit vero. Doloremque debitis eaque eos pariatur quisquam odit ipsam magni assumenda architecto repellat ipsa, rerum quidem placeat dolorem officia!</p>
-            </div>
+            <p style={{ color: "red" }}>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae quam laborum autem libero ratione dolore esse
+              aliquam, iste quasi non accusamus, reprehenderit dignissimos sed dolorem modi. Voluptas sunt aliquam maxime!
+            </p>
+          </div>
         </Box>
       </Flex>
     </Box>

@@ -7,7 +7,7 @@
 
 /* Navbar takes fixed height */
 .compiler .navbar {
-  background-color: red;
+  background-color: #f5f5f5;
   height: 10vh; /* 10% of the viewport */
   display: flex;
   align-items: center;
@@ -23,7 +23,6 @@
 
 /* Problem Statement styling */
 .compiler .probState {
-  background-color: beige;
   padding: 10px;
   box-sizing: border-box;
   overflow-y: auto;
@@ -38,11 +37,13 @@
 
 /* Code editor styling */
 .compiler .codeeditor {
-  background-color: cadetblue;
+  background-color: white;
+
   flex-grow: 1; /* Takes available vertical space */
   padding: 10px;
   box-sizing: border-box;
   overflow-y: auto;
+  border-radius: 2%;
 }
 
 /* Test cases styling */
@@ -61,8 +62,7 @@
   border: 1px solid #ccc;
   padding: 10px;
   font-family: monospace;
-  font-size: 14px;
-  background-color: #f4f4f4;
+  background-color: black;
   outline: none;
   overflow-y: auto;
 }
@@ -82,4 +82,9 @@ body{
   width: 100vw;
   height: 100vh;
   position: fixed;
+}
+
+.codeeditor .code {
+  font-size: 1.2rem;
+  color: white;
 }

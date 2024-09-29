@@ -1,12 +1,13 @@
-import logo from './logo.svg';
-import './App.css';
-import CompilerPage from './components/CompilerPage';
+// App.js
+import { ChakraProvider } from "@chakra-ui/react";
+import theme from "./theme";
+import CompilerPage from "./components/CompilerPage";
 
 function App() {
   return (
-    <div className="App">
-      <CompilerPage/>
-    </div>
+    <ChakraProvider theme={theme}>
+      <CompilerPage />
+    </ChakraProvider>
   );
 }
 

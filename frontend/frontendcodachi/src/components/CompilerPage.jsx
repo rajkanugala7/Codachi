@@ -3,6 +3,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import Editor from "@monaco-editor/react";
 import LanguageSelector from "./LanguageSelector";
 import { LANGUAGES } from "../constants"; // Assuming your language constants are in constants.js
+import Output from "./Output";
 
 export default function CompilerPage() {
   const [code, setCode] = useState(LANGUAGES["Java"].codeSnippet); // Initialize with Java code snippet
@@ -117,6 +118,7 @@ export default function CompilerPage() {
 
           {/* Test Cases */}
           <div className="p-4">
+            <Output language={language} editorRef={editorRef} />
             <h1>Test Cases</h1>
             <p style={{ color: "red" }}>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae quam laborum autem libero ratione dolore esse

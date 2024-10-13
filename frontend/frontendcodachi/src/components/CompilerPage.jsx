@@ -1,13 +1,25 @@
 import React, { useState, useRef } from "react";
-import { Box, Flex } from "@chakra-ui/react";
+import { useLocation } from "react-router-dom";
+import { Box, Flex, Textarea, Button } from "@chakra-ui/react";
 import Editor from "@monaco-editor/react";
 import LanguageSelector from "./LanguageSelector";
 import { LANGUAGES } from "../constants"; // Assuming your language constants are in constants.js
 import Output from "./Output";
+import { executeCode } from "./api"; // Assuming you have an API function to execute the code
 
 export default function CompilerPage() {
   const [code, setCode] = useState(LANGUAGES["Java"].codeSnippet); // Initialize with Java code snippet
   const [language, setLanguage] = useState("Java");
+  const [userInput, setUserInput] = useState(""); // State to store user input
+  const [output, setOutput] = useState(""); // State to store output
+  const location = useLocation();
+  const { experiment } = location.state || {};
+  const testCases = experiment.testCases || [];
+  for (let testCase of testCases)
+  {
+    console.log(testCase)
+  }
+
   const editorRef = useRef(null);
 
   const onMount = (editor) => {
@@ -51,11 +63,13 @@ export default function CompilerPage() {
     window.addEventListener("mouseup", handleMouseUp); // Start listening to mouseup
   };
 
+  // Function to execute the code with user input
+
   return (
     <Box className="compiler" bg="samurai.gray" color="samurai.white" h="100vh" p={4}>
       {/* Navbar */}
       <Box className="navbar rounded" bg="samurai.black" color="samurai.gold" p={4}>
-        <h1 style={{ fontSize: "1.2rem" }}>CODACHI</h1>
+        <h1 style={{ fontSize: "1.2rem"  }}>CODACHI</h1>
       </Box>
 
       {/* Main Content: Problem Statement and Code Editor */}
@@ -71,10 +85,10 @@ export default function CompilerPage() {
           p={4}
           overflowY="auto"
         >
-          <h2>Problem Statement</h2>
+          <h2>{ experiment.name}</h2>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo ipsa sed, modi nisi, sit dolorem aliquid
-            soluta repellendus, ad voluptate inventore debitis assumenda cumque. Optio natus ducimus amet sunt.
+            {experiment.statement}
+           
           </p>
           {/* Add more content as needed */}
         </Box>
@@ -89,20 +103,21 @@ export default function CompilerPage() {
           height="100%"
         />
 
-        {/* Code Editor */}
+        {/* Code Editor and Output Section */}
         <Box
           className="editor-container"
           width={`calc(100% - ${dividerPosition}px - 10px)`} // Right box width adjusted based on divider
           border="1px solid"
           borderColor="samurai.steel"
           borderRadius="md"
+          p={4}
         >
           {/* Language Selector */}
           <LanguageSelector language={language} onSelect={onSelect} />
-          
+
           {/* Code Editor */}
           <Editor
-            height="80%"
+            height="85%"
             language={language.toLowerCase()}
             value={code}
             theme="vs-dark"
@@ -116,15 +131,16 @@ export default function CompilerPage() {
             onMount={onMount}
           />
 
-          {/* Test Cases */}
-          <div className="p-4">
-            <Output language={language} editorRef={editorRef} />
-            <h1>Test Cases</h1>
-            <p style={{ color: "red" }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae quam laborum autem libero ratione dolore esse
-              aliquam, iste quasi non accusamus, reprehenderit dignissimos sed dolorem modi. Voluptas sunt aliquam maxime!
-            </p>
-          </div>
+          {/* User Input Area */}
+        
+
+          {/* Run Button */}
+        
+
+          {/* Output Section */}
+          <Box mt={4}>
+            <Output editorRef={editorRef} language={language} testCases={testCases} />
+          </Box>
         </Box>
       </Flex>
     </Box>

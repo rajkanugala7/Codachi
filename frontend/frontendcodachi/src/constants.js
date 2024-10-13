@@ -1,19 +1,19 @@
 export const LANGUAGES = {
   JavaScript: {
     name: "JavaScript",
-    version: "nodejs-18.16.0",  // Piston API version for JavaScript (Node.js)
+    version: "18.15.0",  // Updated Piston API version for JavaScript (Node.js)
     codeSnippet: `// JavaScript Example
   console.log("Welcome to Codachi");`
   },
   Python: {
     name: "Python",
-    version: "3.10.0",  // Piston API version for Python
+    version: "3.10.0",  // Updated Piston API version for Python
     codeSnippet: `# Python Example
   print("Welcome to Codachi")`
   },
   Java: {
     name: "Java",
-    version: "15.0.2",  // Piston API version for Java
+    version: "15.0.2",  // Updated Piston API version for Java
     codeSnippet: `// Java Example
   public class Main {
     public static void main(String[] args) {
@@ -23,7 +23,7 @@ export const LANGUAGES = {
   },
   C: {
     name: "C",
-    version: "10.2.0",  // Piston API version for C (GCC)
+    version: "10.2.0",  // Updated Piston API version for C (GCC)
     codeSnippet: `// C Example
   #include <stdio.h>
   
@@ -34,7 +34,7 @@ export const LANGUAGES = {
   },
   cpp: {
     name: "C++",
-    version: "10.2.0",  // Piston API version for C++ (G++)
+    version: "10.2.0",  // Updated Piston API version for C++ (G++)
     codeSnippet: `// C++ Example
   #include <iostream>
   using namespace std;

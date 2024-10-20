@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const Schema = mongoose.Schema;
 
-const TeacherSchema = new Schema({
+const StudentSchema = new Schema({
     name: {
         type: String,
         required: true
@@ -16,14 +16,19 @@ const TeacherSchema = new Schema({
         required: true,
         unique: true
     },
-    classrooms: [{
+    classroom: {
         type: Schema.Types.ObjectId,
-        ref: 'Classroom',  // Reference to the Classroom model
-        default: []        // Start with an empty array
+        ref: 'Classroom',  // Reference to the Classroom the student belongs to
+        required: true
+    },
+    completedExperiments: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Experiment',  // List of completed experiments
+        default: []
     }]
 });
 
-TeacherSchema.pre('save', async function(next) {
+StudentSchema.pre('save', async function(next) {
     if (this.isModified('password') || this.isNew) {
         try {
             const salt = await bcrypt.genSalt(10);
@@ -37,6 +42,6 @@ TeacherSchema.pre('save', async function(next) {
     }
 });
 
-const Teacher = mongoose.model('Teacher', TeacherSchema);
+const Student = mongoose.model('Student', StudentSchema);
 
-module.exports = Teacher;
+module.exports = Student;

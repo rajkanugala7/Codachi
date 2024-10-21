@@ -168,28 +168,44 @@ app.get('/getAllLabs/:classroomId', async (req, res) => {
 });
 
 // Create Experiment
-app.post('/createExperiment', async (req, res) => {
+app.post('/createExperiment/:labId', async (req, res) => {
     const { name, problemStatement } = req.body;
-    const newExperiment = new Experiment({ name, problemStatement });
+    const { labId } = req.params; // Get labId from the route parameter
+
     try {
+        // Create the new experiment
+        const newExperiment = new Experiment({ name, problemStatement });
         await newExperiment.save();
-        res.json(newExperiment);
+
+        // Add the experiment to the corresponding lab
+        await Lab.findByIdAndUpdate(labId, { $push: { experiments: newExperiment._id } });
+
+        res.json({ message: "Experiment created and added to lab", newExperiment });
     } catch (err) {
         res.status(400).send(err);
     }
 });
 
 // Create Test Case
-app.post('/createTestCase', async (req, res) => {
+// Create Test Case and Add to Experiment
+app.post('/createTestCase/:experimentId', async (req, res) => {
     const { input, output } = req.body;
-    const newTestCase = new TestCase({ input, output });
+    const { experimentId } = req.params;
+
     try {
+        // Create the new test case
+        const newTestCase = new TestCase({ input, output });
         await newTestCase.save();
-        res.json(newTestCase);
+
+        // Add the new test case to the experiment
+        await Experiment.findByIdAndUpdate(experimentId, { $push: { testCases: newTestCase._id } });
+
+        res.json({ message: "Test case created and added to experiment", newTestCase });
     } catch (err) {
         res.status(400).send(err);
     }
 });
+
 
 // Add Test Case to Experiment
 app.put('/addTestCaseToExperiment/:experimentId', async (req, res) => {
@@ -230,8 +246,14 @@ app.delete('/deleteExperiment/:id', async (req, res) => {
 app.get('/getAllExperiments/:labId', async (req, res) => {
     const { labId } = req.params;
     try {
-        const experiments = await Experiment.find({ lab: labId });
-        res.json(experiments);
+        // Find the lab by its ID
+        const lab = await Lab.findById(labId).populate('experiments');
+        if (!lab) {
+            return res.status(404).send("Lab not found");
+        }
+
+        // Return the experiments associated with the lab
+        res.json(lab.experiments);
     } catch (err) {
         res.status(400).send(err);
     }

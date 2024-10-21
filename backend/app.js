@@ -51,6 +51,29 @@ app.post('/createClassroom', async (req, res) => {
     }
 });
 
+// Update Classroom
+app.put('/updateClassroom/:id', async (req, res) => {
+    const { id } = req.params;
+    const { className } = req.body;
+    try {
+        const updatedClassroom = await Classroom.findByIdAndUpdate(id, { className }, { new: true });
+        res.json(updatedClassroom);
+    } catch (err) {
+        res.status(400).send(err);
+    }
+});
+
+// Delete Classroom
+app.delete('/deleteClassroom/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await Classroom.findByIdAndDelete(id);
+        res.send("Classroom deleted successfully");
+    } catch (err) {
+        res.status(400).send(err);
+    }
+});
+
 // Get all classrooms
 app.get('/getClassrooms', async (req, res) => {
     const classrooms = await Classroom.find().populate('students');
@@ -156,6 +179,34 @@ app.post('/createLab', async (req, res) => {
     }
 });
 
+// Update Lab
+app.put('/updateLab/:id', async (req, res) => {
+    const { id } = req.params;
+    const { labName } = req.body;
+    try {
+        const updatedLab = await Lab.findByIdAndUpdate(id, { labName }, { new: true });
+        res.json(updatedLab);
+    } catch (err) {
+        res.status(400).send(err);
+    }
+});
+
+// Delete Lab
+app.delete('/deleteLab/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        // Optionally remove lab reference from Classroom if needed
+        const lab = await Lab.findById(id);
+        if (lab) {
+            await Classroom.findByIdAndUpdate(lab.classroom, { $pull: { labs: id } });
+        }
+        await Lab.findByIdAndDelete(id);
+        res.send("Lab deleted successfully");
+    } catch (err) {
+        res.status(400).send(err);
+    }
+});
+
 // Get all labs of a classroom
 app.get('/getAllLabs/:classroomId', async (req, res) => {
     const { classroomId } = req.params;
@@ -170,7 +221,7 @@ app.get('/getAllLabs/:classroomId', async (req, res) => {
 // Create Experiment
 app.post('/createExperiment/:labId', async (req, res) => {
     const { name, problemStatement } = req.body;
-    const { labId } = req.params; // Get labId from the route parameter
+    const { labId } = req.params;
 
     try {
         // Create the new experiment
@@ -187,7 +238,6 @@ app.post('/createExperiment/:labId', async (req, res) => {
 });
 
 // Create Test Case
-// Create Test Case and Add to Experiment
 app.post('/createTestCase/:experimentId', async (req, res) => {
     const { input, output } = req.body;
     const { experimentId } = req.params;
@@ -205,7 +255,6 @@ app.post('/createTestCase/:experimentId', async (req, res) => {
         res.status(400).send(err);
     }
 });
-
 
 // Add Test Case to Experiment
 app.put('/addTestCaseToExperiment/:experimentId', async (req, res) => {
@@ -246,13 +295,10 @@ app.delete('/deleteExperiment/:id', async (req, res) => {
 app.get('/getAllExperiments/:labId', async (req, res) => {
     const { labId } = req.params;
     try {
-        // Find the lab by its ID
         const lab = await Lab.findById(labId).populate('experiments');
         if (!lab) {
             return res.status(404).send("Lab not found");
         }
-
-        // Return the experiments associated with the lab
         res.json(lab.experiments);
     } catch (err) {
         res.status(400).send(err);

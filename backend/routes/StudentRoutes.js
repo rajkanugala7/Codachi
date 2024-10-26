@@ -9,7 +9,6 @@ const {
 
 // Create Student
 router.post('/', createStudent);
-
 // Update Student
 router.put('/:id', updateStudent);
 

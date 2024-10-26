@@ -96,6 +96,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import theme from "./theme";
 import CompilerPage from "./components/CompilerPage";
 import ExperimentList from "./Dashboard/ExperimentsList";
+import LoginPage from "./components/loginPage/LoginPage";
 
 function App() {
   
@@ -203,6 +204,7 @@ function App() {
 
           {/* Route for CompilerPage, passing the experiment name in the URL */}
           <Route path="/compiler" element={<CompilerPage  />} />
+          <Route path="login" element={<LoginPage/>}/>
         </Routes>
       </Router>
     </ChakraProvider>

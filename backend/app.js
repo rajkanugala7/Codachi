@@ -404,6 +404,7 @@ const teacherRoutes = require('./routes/teacherRoutes');
 const labRoutes = require('./routes/labRoutes');
 const experimentRoutes = require('./routes/experimentRoutes');
 const testCaseRoutes = require('./routes/testCaseRoutes');
+const authRoutes=require("./routes/Auth");
 
 const app = express();
 app.use(express.json());
@@ -417,6 +418,7 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
     .catch((err) => console.log("Error connecting to database:", err));
 
 // Use the routes
+app.use('/api/auth',authRoutes)
 app.use('/api/admins', adminRoutes);
 app.use('/api/classrooms', classroomRoutes);
 app.use('/api/students', studentRoutes);

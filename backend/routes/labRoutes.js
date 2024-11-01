@@ -5,6 +5,7 @@ const {
     updateLab,
     deleteLab,
     getAllLabs,
+    getLabsOfClassroom,
 } = require('../controllers/labController');
 
 // Create Lab
@@ -17,6 +18,7 @@ router.put('/:id', updateLab);
 router.delete('/:id', deleteLab);
 
 // Get all Labs of a Classroom
-router.get('/:classroomId', getAllLabs);
+router.get('/:classroomId/:teacherId', getAllLabs);
+router.get('/:id', getLabsOfClassroom);
 
 module.exports = router;

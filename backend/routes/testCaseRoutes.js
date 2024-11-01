@@ -5,6 +5,8 @@ const {
     updateTestCase,
     deleteTestCase,
     getAllTestCases,
+    deleteTestCasesByExperimentId
+    
 } = require('../controllers/testCaseController');
 
 // Create Test Case
@@ -18,5 +20,7 @@ router.delete('/:id', deleteTestCase);
 
 // Get all Test Cases of an Experiment
 router.get('/:experimentId', getAllTestCases);
+
+router.delete('/experiment/:experimentId', deleteTestCasesByExperimentId);
 
 module.exports = router;

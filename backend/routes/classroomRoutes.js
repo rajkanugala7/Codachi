@@ -5,6 +5,7 @@ const {
     updateClassroom,
     deleteClassroom,
     getAllClassrooms,
+    getClassroomById,
 } = require('../controllers/classroomController');
 
 // Create Classroom
@@ -19,4 +20,5 @@ router.delete('/:id', deleteClassroom);
 // Get all Classrooms
 router.get('/', getAllClassrooms);
 
+router.get('/:id',getClassroomById)
 module.exports = router;

@@ -97,6 +97,17 @@ import theme from "./theme";
 import CompilerPage from "./components/CompilerPage";
 import ExperimentList from "./Dashboard/ExperimentsList";
 import LoginPage from "./components/loginPage/LoginPage";
+import StudentDashBoard from "./Dashboard/StudentDashBoard";
+import DashBoard from "./Dashboard/DashBoard";
+import ClassroomDashBoard from "./Dashboard/ClassroomDashBoard";
+import CreateLab from "./CRUDForms/CreateLab";
+import AddClassroomForm from "./CRUDForms/AddClassroomForm";
+import EditClassroomForm from "./CRUDForms/EditClassroomForm";
+import AddExperiment from "./CRUDForms/AddExperiment";
+import EditExperiment from "./CRUDForms/EditExperiment";
+import AddStudents from "./CRUDForms/AddStudents";
+import EditStudent from "./CRUDForms/EditStudent";
+import StudentLabDashboard from "./Dashboard/StudentLabDashboard";
 
 function App() {
   
@@ -200,11 +211,23 @@ function App() {
       <Router>
         <Routes>
           {/* Route for Experiment List */}
-          <Route path="/" element={<ExperimentList experiments={problems} />} />
+          <Route path="/experiments" element={<ExperimentList experiments={problems} />} />
 
           {/* Route for CompilerPage, passing the experiment name in the URL */}
           <Route path="/compiler" element={<CompilerPage  />} />
-          <Route path="login" element={<LoginPage/>}/>
+                  <Route path="/" element={<LoginPage />} />
+                  <Route path="student" element={<StudentDashBoard />} />
+                  <Route path="teacher" element={<DashBoard />} />
+                  <Route path="admin" element={<DashBoard />} />
+                  <Route path="classroom" element={<ClassroomDashBoard />} />
+                  <Route path="createlab" element={<CreateLab />} />
+                  <Route path="createnewclass" element={<AddClassroomForm />} />
+                  <Route path="addexperiment" element={<AddExperiment/>}/>
+                  <Route path="editclassroom" element={<EditClassroomForm/>}/>
+                  <Route path="editexperiment" element={<EditExperiment />} />
+                  <Route path="createstudent" element={<AddStudents />} />
+                  <Route path="editstudent" element={<EditStudent />} />
+                  <Route path="labs" element={ <StudentLabDashboard/>}/>
         </Routes>
       </Router>
     </ChakraProvider>

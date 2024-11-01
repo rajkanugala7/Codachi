@@ -5,6 +5,8 @@ const {
     updateStudent,
     deleteStudent,
     getAllStudents,
+    bulkCreateStudents,
+    getStudent
 } = require('../controllers/studentController');
 
 // Create Student
@@ -14,8 +16,9 @@ router.put('/:id', updateStudent);
 
 // Delete Student
 router.delete('/:id', deleteStudent);
-
+router.get('/student/:id', getStudent);
 // Get all Students of a Classroom
 router.get('/:classroomId', getAllStudents);
+router.post("/bulk-create", bulkCreateStudents);
 
 module.exports = router;

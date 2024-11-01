@@ -1,17 +1,37 @@
 const Experiment = require('../models/Experiment');
 const Lab = require('../models/Lab');
 
-// Create Experiment
+
 const createExperiment = async (req, res) => {
-    const { name, problemStatement } = req.body;
+    const { labId, name, problemStatement } = req.body;
+
     try {
+        // Create the new experiment
         const newExperiment = new Experiment({ name, problemStatement });
         await newExperiment.save();
-        res.json(newExperiment);
+
+        // Find the lab by labId and add the new experiment to its experiments array
+        const updatedLab = await Lab.findByIdAndUpdate(
+            labId,
+            { $push: { experiments: newExperiment._id } },
+            { new: true }
+        );
+
+        if (!updatedLab) {
+            return res.status(404).json({ message: 'Lab not found' });
+        }
+
+        res.status(201).json({
+            message: 'Experiment created and added to lab successfully',
+            experiment: newExperiment,
+            lab: updatedLab
+        });
     } catch (err) {
-        res.status(400).send(err);
+        console.error('Error creating experiment:', err);
+        res.status(400).json({ error: 'Failed to create experiment' });
     }
 };
+
 
 const getAllExperiments = async (req, res) => {
     const { labId } = req.params;
@@ -23,7 +43,7 @@ const getAllExperiments = async (req, res) => {
         if (!lab) {
             return res.status(404).json({ message: 'Lab not found' });
         }
-
+        console.log(lab);
         // Return the experiments from the lab
         res.json(lab.experiments);
     } catch (err) {

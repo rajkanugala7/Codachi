@@ -27,6 +27,14 @@
   box-sizing: border-box;
   overflow-y: auto;
 }
+.dashboard-container {
+  max-height: 80vh; /* Adjust height as needed */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding: 20px; /* Optional padding */
+  border: 1px solid #ccc; /* Optional border for better visibility */
+  border-radius: 8px; /* Optional rounded corners */
+  background-color: #f9f9f9; /* Optional background color */
+}
 
 /* Code editor and test cases split container (vertical split) */
 .compiler .code-testcases {
@@ -105,4 +113,42 @@ body::-webkit-scrollbar{
 }
 .editor-container::-webkit-scrollbar{
   display: none;
+}
+
+.cards-container {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.card {
+  width: 250px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.card h3 {
+  margin-bottom: 10px;
+}
+
+.card p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.card button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.card button:hover {
+  background-color: #0056b3;
 }

@@ -1,10 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef ,useEffect} from "react";
 import { useLocation } from "react-router-dom";
 import { Box, Flex, Textarea, Button } from "@chakra-ui/react";
 import Editor from "@monaco-editor/react";
 import LanguageSelector from "./LanguageSelector";
 import { LANGUAGES } from "../constants"; // Assuming your language constants are in constants.js
 import Output from "./Output";
+import axios from "axios";
 import { executeCode } from "./api"; // Assuming you have an API function to execute the code
 
 export default function CompilerPage() {
@@ -13,13 +14,27 @@ export default function CompilerPage() {
   const [userInput, setUserInput] = useState(""); // State to store user input
   const [output, setOutput] = useState(""); // State to store output
   const location = useLocation();
-  const { experiment } = location.state || {};
-  const testCases = experiment.testCases || [];
-  for (let testCase of testCases)
-  {
-    console.log(testCase)
-  }
-
+  const experiment = location?.state?.experiment || {};
+  const [testCases,setTestCases]=useState([])
+  console.log("exp testcasese",experiment);
+  useEffect(() => {
+    // Define an async function to fetch test cases
+    const fetchTestCases = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/testcases/${experiment._id}`);
+        console.log("Fetched test cases:", response.data);
+        setTestCases(response.data); // Store fetched test cases
+      } catch (error) {
+        console.error("Error fetching test cases:", error);
+      }
+    };
+  
+    // Call the fetch function if experiment ID is available
+    if (experiment._id) {
+      fetchTestCases();
+    }
+  }, [experiment._id]); // Fetch again if experiment ID changes
+  
   const editorRef = useRef(null);
 
   const onMount = (editor) => {
@@ -87,7 +102,7 @@ export default function CompilerPage() {
         >
           <h2>{ experiment.name}</h2>
           <p>
-            {experiment.statement}
+            {experiment.problemStatement}
            
           </p>
           {/* Add more content as needed */}

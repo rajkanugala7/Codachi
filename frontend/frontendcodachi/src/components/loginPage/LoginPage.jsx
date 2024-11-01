@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('Student'); // Default role
+  const [role, setRole] = useState('Student');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -15,14 +15,14 @@ const Login = () => {
     setError('');
 
     try {
-      const response = await axios.post('/api/auth/login', { email, password, role });
-      const { token } = response.data;
-
-      // Store the token in localStorage
+      const response = await axios.post('http://localhost:8080/api/auth/login', { email, password, role });
+      const { token, user } = response.data;
+      console.log(response);
+      // Store token in localStorage
       localStorage.setItem('token', token);
 
-      // Redirect to protected page based on role
-      navigate(`/${role.toLowerCase()}`); // Redirecting to the route for the role (like /student, /teacher, etc.)
+      // Navigate to role-specific dashboard and pass user info as state
+      navigate(`/${role.toLowerCase()}`, { state: { user ,role } });
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed');
     }

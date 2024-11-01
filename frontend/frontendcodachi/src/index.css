@@ -91,7 +91,25 @@ body{
   width: 100vw;
   height: 100vh;
   position: fixed;
+    font-family: 'Fira Code', monospace;
+
+
+  font-family: 'Fira Code', monospace;
+  background-color: #f5f5f5; /* Background color */
+  color: #333; /* Text color */
 }
+
+/* Specific styles for code blocks */
+code, pre {
+  font-family: 'Fira Code', monospace;
+  background-color: #272c34; /* Background color for code */
+  color: #f8f8f2; /* Text color for code */
+  padding: 10px;
+  border-radius: 5px;
+  overflow-x: auto; /* Allows horizontal scrolling for long lines */
+}
+
+
 
 .codeeditor .code {
   font-size: 1.2rem;
@@ -151,4 +169,116 @@ body::-webkit-scrollbar{
 
 .card button:hover {
   background-color: #0056b3;
+}
+/* LoginPage.css */
+/* LoginPage.css */
+.loginpage {
+  background-image: url('../public/CODACHI3333.jpg');
+  background-repeat: round;
+  background-color: black;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+@keyframes bubblePop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  80% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes bubbleShake {
+  0% {
+    transform: translateY(0);
+  }
+  20% {
+    transform: translateY(-8px);
+  }
+  40% {
+    transform: translateY(4px);
+  }
+  60% {
+    transform: translateY(-4px);
+  }
+  80% {
+    transform: translateY(2px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.bubble {
+  position: relative;
+  background-image: url('../public/bubble.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  width: 700px;
+  height: 600px;
+  padding: 40px 20px;
+  right: 10px;
+  bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  /* Ensure visibility after animation */
+  opacity: 0; /* Start invisible */
+  transform-origin: center;
+  animation: bubblePop 1.2s ease-out 2s forwards, bubbleShake 2s ease-in-out 4s infinite;
+}
+
+form {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+form input,
+form button {
+  width: 100%;
+  margin: 10px 0;
+  border-radius: 10px;
+  padding: 6px;
+}
+
+form div {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+form label {
+  font-size: 1rem;
+  color: #333;
+}
+
+form h2 {
+  margin-bottom: 20px;
+}
+
+form p {
+  color: red;
+}
+.loginbtn{
+  width: 10rem;
 }

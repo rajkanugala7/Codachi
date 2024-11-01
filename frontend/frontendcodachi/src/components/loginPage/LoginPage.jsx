@@ -29,7 +29,9 @@ const Login = () => {
   };
 
   return (
-    <div>
+    <div className='loginpage'>
+      <div className='bubble'>
+     
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <input
@@ -37,50 +39,66 @@ const Login = () => {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          required
+            required
+            className='form-control'
         />
         <input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          required
+            required
+            className='form-control'
         />
+<div className="form-group">
+  <div className="form-check">
+    <input
+      type="radio"
+      value="Student"
+      checked={role === 'Student'}
+      onChange={(e) => setRole(e.target.value)}
+      className="form-check-input"
+      id="roleStudent"
+    />
+    <label className="form-check-label" htmlFor="roleStudent">
+      Student
+    </label>
+  </div>
 
-        <div>
-          <label>
-            <input
-              type="radio"
-              value="Student"
-              checked={role === 'Student'}
-              onChange={(e) => setRole(e.target.value)}
-            />
-            Student
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="Teacher"
-              checked={role === 'Teacher'}
-              onChange={(e) => setRole(e.target.value)}
-            />
-            Teacher
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="Admin"
-              checked={role === 'Admin'}
-              onChange={(e) => setRole(e.target.value)}
-            />
-            Admin
-          </label>
-        </div>
+  <div className="form-check">
+    <input
+      type="radio"
+      value="Teacher"
+      checked={role === 'Teacher'}
+      onChange={(e) => setRole(e.target.value)}
+      className="form-check-input"
+      id="roleTeacher"
+    />
+    <label className="form-check-label" htmlFor="roleTeacher">
+      Teacher
+    </label>
+  </div>
+
+  <div className="form-check">
+    <input
+      type="radio"
+      value="Admin"
+      checked={role === 'Admin'}
+      onChange={(e) => setRole(e.target.value)}
+      className="form-check-input"
+      id="roleAdmin"
+    />
+    <label className="form-check-label" htmlFor="roleAdmin">
+      Admin
+    </label>
+  </div>
+</div>
 
         {error && <p style={{ color: 'red' }}>{error}</p>}
 
-        <button type="submit">Login</button>
+        <button type="submit" className='btn btn-warning loginbtn'>Login</button>
       </form>
+      </div>
     </div>
   );
 };

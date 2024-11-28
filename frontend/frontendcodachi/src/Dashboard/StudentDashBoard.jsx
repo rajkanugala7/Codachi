@@ -26,9 +26,10 @@ const StudentDashboard = () => {
 
   return (
     <div>
+      <div className='navbar bg-body-tertiary'>
+            <h1>CODACHI</h1>
+      </div>
       <h2>Welcome, {user?.name}!</h2>
-      <p>Role: {role}</p>
-      <p>ID: {user?._id}</p>
 
       <div className="cards-container">
         <div className="card">

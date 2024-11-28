@@ -1,130 +1,183 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Navbar from "../components/navbar/Navbar";
 
 export default function ClassroomDashBoard() {
     const location = useLocation();
-    const { classroomId, teacherId } = location?.state || {}; // Safe access with fallback
-    const [labs, setLabs] = useState([]); // State to store labs
-    const [students, setStudents] = useState([]); // State to store students
-    const [loading, setLoading] = useState(true); // Loading state
-    const [error, setError] = useState(null); // Error state
     const navigate = useNavigate();
+
+    // Fallback values for className and randomImage
+    const {
+        classroomId,
+        teacherId,
+        user,
+        role,
+        className: initialClassName = "Classroom Name",
+        randomImage: initialRandomImage = "default_image_url.jpg",
+    } = location?.state || {};
+
+    const [className, setClassName] = useState(initialClassName);
+    const [randomImage, setRandomImage] = useState(initialRandomImage);
+    const [labs, setLabs] = useState([]);
+    const [students, setStudents] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [view, setView] = useState("main"); // "main", "labs", or "students"
 
     useEffect(() => {
         const fetchDetails = async () => {
             try {
-                console.log("Fetching labs and students for Classroom:", classroomId, "Teacher:", teacherId); // Logging IDs
-                const labsResponse = await axios.get(`http://localhost:8080/api/labs/${classroomId}/${teacherId}`);
-                const studentsResponse = await axios.get(`http://localhost:8080/api/students/${classroomId}`);
-                
-                setLabs(labsResponse.data); // Assuming labs response data is an array
-                setStudents(studentsResponse.data); // Assuming students response data is an array
+                const [labsResponse, studentsResponse, classDetailsResponse] = await Promise.all([
+                    axios.get(`http://localhost:8080/api/labs/${classroomId}/${teacherId}`),
+                    axios.get(`http://localhost:8080/api/students/${classroomId}`),
+                    axios.get(`http://localhost:8080/api/classrooms/${classroomId}`), // For class details
+                ]);
+
+                setLabs(labsResponse.data || []);
+                setStudents(studentsResponse.data || []);
+
+                // Update className and randomImage from API if missing
+                const classDetails = classDetailsResponse.data;
+                setClassName(classDetails?.name || initialClassName);
+                setRandomImage(classDetails?.image || initialRandomImage);
             } catch (err) {
-                console.error('Error fetching details:', err);
-                setError(err.response?.data?.message || 'Failed to fetch details');
+                setError(err.response?.data?.message || "Failed to fetch classroom details.");
             } finally {
                 setLoading(false);
             }
         };
 
-        if (classroomId && teacherId) {
-            fetchDetails(); // Call the async function
-        }
-    }, [classroomId, teacherId]); // Dependency array
+        if (classroomId && teacherId) fetchDetails();
+    }, [classroomId, teacherId, initialClassName, initialRandomImage]);
 
-    const handleDeleteLab = async (labId) => {
-        try {
-            await axios.delete(`http://localhost:8080/api/labs/${labId}`);
-            setLabs((prevLabs) => prevLabs.filter((lab) => lab._id !== labId)); // Update labs state by filtering out deleted lab
-        } catch (err) {
-            console.error('Error deleting lab:', err);
-            setError(err.response?.data?.message || 'Failed to delete lab');
-        }
+    const handleLabClick = (labId) => {
+        navigate("/experiments", { state: { labId, role: "Teacher" } });
+    };
+
+    
+
+    const handleCreateLab = () => {
+        navigate("/createlab", {
+            state: { classroomId, teacherId, className, randomImage,teacherId },
+        });
+    };
+    
+    const handleAddStudent = () => {
+        navigate("/createstudent", {
+            state: { classroomId, className, randomImage },
+        });
+    };
+
+
+
+
+    const handleEditStudent = (studentId) => {
+        navigate(`/editstudent/${studentId}`, { state: { classroomId ,className,randomImage} });
     };
 
     const handleDeleteStudent = async (studentId) => {
         try {
             await axios.delete(`http://localhost:8080/api/students/${studentId}`);
-            setStudents((prevStudents) => prevStudents.filter((student) => student._id !== studentId)); // Update students state by filtering out deleted student
+            setStudents((prev) => prev.filter((student) => student._id !== studentId));
         } catch (err) {
-            console.error('Error deleting student:', err);
-            setError(err.response?.data?.message || 'Failed to delete student');
+            alert("Failed to delete student: " + (err.response?.data?.message || "Unknown error"));
         }
     };
 
-    const handleEditStudent = (studentId) => {
-        navigate('/editstudent', { state: { studentId, classroomId } }); // Assuming you have an edit route
-    };
+    const renderMainCards = () => (
+        <div className="cards-container">
+            <div className="card" onClick={() => setView("labs")}>
+                <div className="card-img-top">
+                    <img src="https://img.freepik.com/free-vector/programming-concept-illustration_114360-27522.jpg" alt="" />
+                </div>
+                <div className="card-body">
+                <h2>Labs</h2>
+                    <p>{labs.length} Labs</p>
+                    </div>
+            </div>
+            <div className="card" onClick={() => setView("students")}>
+                <div className="card-img-top">
+                    <img src="https://png.pngtree.com/png-clipart/20230928/original/pngtree-kids-coding-class-png-image_13006519.png" alt="" />
+                </div>
+                <div className="card-body">
+                <h2>Students</h2>
+                    <p>{students.length} Students</p>
+                    </div>
+            </div>
+        </div>
+    );
 
-    const handleCreateLab = () => {
-        navigate('/createlab', { state: { classroomId, teacherId } });
-    };
-
-    const handleAddStudent = () => {
-        navigate('/createstudent', { state: { classroomId } });
-    };
-
-    const handleLab = async (id) => {
-        try {
-            navigate('/experiments', { state: { labId: id  ,role : "Teacher"} });
-        } catch (error) {
-            console.error('Error fetching lab details:', error);
-            setError(error.response?.data?.message || 'Failed to fetch lab details');
-        }
-    };
-
-    if (loading) {
-        return <div>Loading...</div>; // Loading state
-    }
-
-    if (error) {
-        return <div>Error: {error}</div>; // Error handling
-    }
-
-    return (
-        <div className="dashboard-container">
-            <h1>Classroom Dashboard</h1>
-
-            {/* Labs Section */}
-            <h2>Labs:</h2>
+    const renderLabs = () => (
+        <div>
+            <button onClick={() => setView("main")}>Back</button>
+            <h2>Labs</h2>
             {labs.length > 0 ? (
-                <ul>
+                <div className="labs-container">
                     {labs.map((lab) => (
-                        <li key={lab._id}>
-                            <span onClick={() => handleLab(lab._id)} style={{ cursor: 'pointer', color: 'blue' }}>
-                                {lab.title || lab.labName || lab._id}
-                            </span>
-                            &nbsp;&nbsp;&nbsp;&nbsp;
-                            <button onClick={() => handleDeleteLab(lab._id)}>Delete Lab</button>
-                        </li>
+                        <div key={lab._id} className="lab-card">
+                            <h3
+                                onClick={() => handleLabClick(lab._id)}
+                                style={{ cursor: "pointer", color: "blue" }}
+                            >
+                                {lab.title || lab.labName || "Unnamed Lab"}
+                            </h3>
+                        </div>
                     ))}
-                </ul>
+                </div>
             ) : (
                 <p>No labs found.</p>
             )}
+            <button onClick={handleCreateLab}>Create New Lab</button>
+        </div>
+    );
 
-            <p onClick={handleCreateLab} style={{ cursor: 'pointer', color: 'blue' }}>Create new Lab</p>
-
-            {/* Students Section */}
-            <h2>Students:</h2>
+    const renderStudents = () => (
+        <div>
+            <button onClick={() => setView("main")}>Back</button>
+            <h2>Students</h2>
             {students.length > 0 ? (
-                <ul>
-                    {students.map((student) => (
-                        <li key={student._id}>
-                            {student.name || student._id}
-                            &nbsp;&nbsp;
-                            <button onClick={() => handleEditStudent(student._id)}>Edit</button>
-                            &nbsp;&nbsp;
-                            <button onClick={() => handleDeleteStudent(student._id)}>Delete</button>
-                        </li>
-                    ))}
-                </ul>
+                <table className="students-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {students.map((student) => (
+                            <tr key={student._id}>
+                                <td>{student.name || "Unnamed Student"}</td>
+                                <td>
+                                    <button onClick={() => handleEditStudent(student._id)}>Edit</button>
+                                    <button onClick={() => handleDeleteStudent(student._id)}>Delete</button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             ) : (
                 <p>No students found.</p>
             )}
+            <button onClick={handleAddStudent}>Add Student</button>
+        </div>
+    );
 
-            <p onClick={handleAddStudent} style={{ cursor: 'pointer', color: 'blue' }}>Add Student</p>
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
+
+    return (
+        <div>
+            <Navbar />
+            <div className="dashboard-container">
+                <div className="classNameDiv">
+                    <h1>{className}</h1>
+                    <img src={randomImage} alt="Classroom" className="classroomImage" />
+                </div>
+                {view === "main" && renderMainCards()}
+                {view === "labs" && renderLabs()}
+                {view === "students" && renderStudents()}
+            </div>
         </div>
     );
 }

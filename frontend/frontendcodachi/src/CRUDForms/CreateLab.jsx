@@ -7,6 +7,8 @@ export default function CreateLab() {
     const navigate = useNavigate();
     const classroomId = location?.state?.classroomId;
     const teacherId = location?.state?.teacherId;
+    const className = location?.state?.className;
+    const randomImage = location?.state?.randomImage;
 
     console.log("classroomId:", classroomId);
     console.log("teacherId:", teacherId);
@@ -26,7 +28,7 @@ export default function CreateLab() {
             console.log("Response:", response.data);
 
             // Navigate back to the Classroom Dashboard
-            navigate("/classroom", { state: { classroomId, teacherId } });
+            navigate("/classroom", { state: { classroomId, teacherId ,randomImage,className} });
         } catch (error) {
             console.error("Error submitting data:", error);
         }

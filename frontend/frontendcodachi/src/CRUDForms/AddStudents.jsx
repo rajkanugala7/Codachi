@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 export default function AddStudents() {
     const location = useLocation();
-    const { classroomId } = location.state || {};
+    const { classroomId ,className,randomImage} = location.state || {};
     const [studentInput, setStudentInput] = useState(""); // For bulk input via textarea
     const [error, setError] = useState(null);
     const navigate = useNavigate();
@@ -37,7 +37,7 @@ export default function AddStudents() {
                 students,
             });
 
-            navigate(-1); // Go back to the ClassroomDashboard
+            navigate("/classroom", { state: { classroomId, className, randomImage } });
         } catch (err) {
             console.error("Error creating students:", err);
             setError(err.response?.data?.message || "Failed to create students");

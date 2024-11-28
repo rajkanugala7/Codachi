@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../navbar/Navbar';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -30,10 +31,15 @@ const Login = () => {
 
   return (
     <div className='loginpage'>
-      <div className='bubble'>
-     
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
+      <Navbar/>
+      <div className="form">
+      <div className="image col-5">
+        <img src="./student.jpg" alt=""  />
+        </div>
+      <div className='formdiv col-5'>
+      
+      <h2 style={{marginLeft:"140px", padding:"10px"}} >Login</h2>
+      <form onSubmit={handleSubmit} className='col-9'>
         <input
           type="email"
           placeholder="Email"
@@ -96,9 +102,10 @@ const Login = () => {
 
         {error && <p style={{ color: 'red' }}>{error}</p>}
 
-        <button type="submit" className='btn btn-warning loginbtn'>Login</button>
+        <button type="submit" className='btn btn-primary loginbtn'>Login</button>
       </form>
-      </div>
+        </div>
+        </div>
     </div>
   );
 };

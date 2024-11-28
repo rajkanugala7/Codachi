@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 export default function EditStudent() {
     const location = useLocation();
     const navigate = useNavigate();
-    const { studentId, classroomId } = location.state || {}; // Get the student ID from the state
+    const { studentId, classroomId ,className,randomImage} = location.state || {}; // Get the student ID from the state
     const [student, setStudent] = useState(null); // State to store student details
     const [loading, setLoading] = useState(true); // Loading state
     const [error, setError] = useState(null); // Error state
@@ -36,7 +36,7 @@ export default function EditStudent() {
         e.preventDefault();
         try {
             await axios.put(`http://localhost:8080/api/students/${studentId}`, { name, email }); // Update student name and email
-            navigate(-1); // Navigate back to classroom dashboard after editing
+            navigate("/classroom", { state: { classroomId, className, randomImage } });
         } catch (err) {
             console.error('Error updating student:', err);
             setError(err.response?.data?.message || 'Failed to update student');

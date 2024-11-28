@@ -13,7 +13,7 @@ export default function AddClassroomForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8080/api/classrooms", {
+      const response = await axios.post("https://codachi-1.onrender.com/api/classrooms", {
         className: classroomName,
         teacherId: user?._id, // Use user._id directly
       });

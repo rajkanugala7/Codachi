@@ -32,7 +32,7 @@ const Dashboard = () => {
     const fetchClassrooms = async () => {
       if (user && role === 'Teacher') {
         try {
-          const response = await axios.get(`http://localhost:8080/api/teachers/${user?._id}`);
+          const response = await axios.get(`https://codachi-1.onrender.com/api/teachers/${user?._id}`);
           setClassrooms(response.data.classrooms || []);
         } catch (err) {
           console.error('Error fetching classrooms:', err);
@@ -61,7 +61,7 @@ const Dashboard = () => {
   const handleDeleteClassroom = async (classroomId) => {
     if (window.confirm('Are you sure you want to delete this classroom?')) {
       try {
-        await axios.delete(`http://localhost:8080/api/classrooms/${classroomId}`);
+        await axios.delete(`https://codachi-1.onrender.com/api/classrooms/${classroomId}`);
         setClassrooms((prevClassrooms) =>
           prevClassrooms.filter((classroom) => classroom._id !== classroomId)
         );

@@ -24,7 +24,7 @@ export default function CreateLab() {
                 teacherId,
             };
 
-            const response = await axios.post(`http://localhost:8080/api/labs/`, payload);
+            const response = await axios.post(`https://codachi-1.onrender.com/api/labs/`, payload);
             console.log("Response:", response.data);
 
             // Navigate back to the Classroom Dashboard

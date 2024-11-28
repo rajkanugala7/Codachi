@@ -16,7 +16,7 @@ export default function ExperimentList() {
   useEffect(() => {
     const fetchExperiments = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/experiments/${labId}`);
+        const response = await axios.get(`https://codachi-1.onrender.com/api/experiments/${labId}`);
         setExperiments(response.data);
       } catch (err) {
         console.error("Error fetching experiments:", err);
@@ -42,7 +42,7 @@ export default function ExperimentList() {
   const handleDelete = async (expId) => {
     if (window.confirm("Are you sure you want to delete this experiment?")) {
       try {
-        await axios.delete(`http://localhost:8080/api/experiments/${expId}`);
+        await axios.delete(`https://codachi-1.onrender.com/api/experiments/${expId}`);
         setExperiments(prev => prev.filter(exp => exp._id !== expId));
         alert("Experiment deleted successfully!");
       } catch (err) {

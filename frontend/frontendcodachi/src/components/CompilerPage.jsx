@@ -21,7 +21,7 @@ export default function CompilerPage() {
     // Define an async function to fetch test cases
     const fetchTestCases = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/testcases/${experiment._id}`);
+        const response = await axios.get(`https://codachi-1.onrender.com/api/testcases/${experiment._id}`);
         console.log("Fetched test cases:", response.data);
         setTestCases(response.data); // Store fetched test cases
       } catch (error) {

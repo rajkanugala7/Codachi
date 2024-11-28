@@ -29,9 +29,9 @@ export default function ClassroomDashBoard() {
         const fetchDetails = async () => {
             try {
                 const [labsResponse, studentsResponse, classDetailsResponse] = await Promise.all([
-                    axios.get(`http://localhost:8080/api/labs/${classroomId}/${teacherId}`),
-                    axios.get(`http://localhost:8080/api/students/${classroomId}`),
-                    axios.get(`http://localhost:8080/api/classrooms/${classroomId}`), // For class details
+                    axios.get(`https://codachi-1.onrender.com/api/labs/${classroomId}/${teacherId}`),
+                    axios.get(`https://codachi-1.onrender.com/api/students/${classroomId}`),
+                    axios.get(`https://codachi-1.onrender.com/api/classrooms/${classroomId}`), // For class details
                 ]);
 
                 setLabs(labsResponse.data || []);
@@ -78,7 +78,7 @@ export default function ClassroomDashBoard() {
 
     const handleDeleteStudent = async (studentId) => {
         try {
-            await axios.delete(`http://localhost:8080/api/students/${studentId}`);
+            await axios.delete(`https://codachi-1.onrender.com/api/students/${studentId}`);
             setStudents((prev) => prev.filter((student) => student._id !== studentId));
         } catch (err) {
             alert("Failed to delete student: " + (err.response?.data?.message || "Unknown error"));

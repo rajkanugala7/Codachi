@@ -14,7 +14,7 @@ export default function EditExperiment() {
   useEffect(() => {
     const fetchTestCases = async () => {
       try {
-          const response = await axios.get(`http://localhost:8080/api/testcases/${experiment._id}`);
+          const response = await axios.get(`https://codachi-1.onrender.com/api/testcases/${experiment._id}`);
           console.log("testcases", response.data);
         setTestCases(response.data);
       } catch (err) {

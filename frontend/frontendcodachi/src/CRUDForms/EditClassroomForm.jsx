@@ -19,7 +19,7 @@ export default function EditClassroomForm() {
   useEffect(() => {
     const fetchClassroomData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/classrooms/${classroomId}`);
+        const response = await axios.get(`https://codachi-1.onrender.com/api/classrooms/${classroomId}`);
         setClassroomData(response.data);
       } catch (err) {
         console.error('Error fetching classroom data:', err);

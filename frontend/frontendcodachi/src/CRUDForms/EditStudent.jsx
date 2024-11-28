@@ -35,7 +35,7 @@ export default function EditStudent() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`http://localhost:8080/api/students/${studentId}`, { name, email }); // Update student name and email
+            await axios.put(`https://codachi-1.onrender.com/api/students/${studentId}`, { name, email }); // Update student name and email
             navigate("/classroom", { state: { classroomId, className, randomImage } });
         } catch (err) {
             console.error('Error updating student:', err);

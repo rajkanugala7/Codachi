@@ -14,7 +14,7 @@ export default function StudentLabDashboard() {
         const fetchLabs = async () => {
             try {
                 console.log("Fetching labs for Classroom:", classroomId); // Logging classroomId
-                const labsResponse = await axios.get(`http://localhost:8080/api/labs/${classroomId}`);
+                const labsResponse = await axios.get(`https://codachi-1.onrender.com/api/labs/${classroomId}`);
                 setLabs(labsResponse.data); // Assuming labs response data is an array
             } catch (err) {
                 console.error('Error fetching labs:', err);

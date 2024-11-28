@@ -16,7 +16,7 @@ const Login = () => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/login', { email, password, role });
+      const response = await axios.post('https://codachi-1.onrender.com/api/auth/login', { email, password, role });
       const { token, user } = response.data;
       console.log(response);
       // Store token in localStorage

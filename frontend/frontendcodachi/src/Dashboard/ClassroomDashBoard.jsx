@@ -128,7 +128,7 @@ export default function ClassroomDashBoard() {
             ) : (
                 <p>No labs found.</p>
             )}
-            <button onClick={handleCreateLab}>Create New Lab</button>
+            <button onClick={handleCreateLab} className="btn btn-primary">Create New Lab</button>
         </div>
     );
 
@@ -170,9 +170,13 @@ export default function ClassroomDashBoard() {
         <div>
             <Navbar />
             <div className="dashboard-container">
+            <video autoPlay muted loop id="bg-video">
+    <source src="./bgvideo.mp4" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
                 <div className="classNameDiv">
                     <h1>{className}</h1>
-                    <img src={randomImage} alt="Classroom" className="classroomImage" />
+                    
                 </div>
                 {view === "main" && renderMainCards()}
                 {view === "labs" && renderLabs()}

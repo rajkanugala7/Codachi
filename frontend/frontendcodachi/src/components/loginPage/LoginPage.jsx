@@ -34,11 +34,13 @@ const Login = () => {
       <Navbar/>
       <div className="form">
       <div className="image col-5">
-        <img src="./student.jpg" alt=""  />
+        <img src="https://www.tayyari.in/_next/static/media/log-in.65f09c14.svg" alt=""  />
         </div>
       <div className='formdiv col-5'>
       
-      <h2 style={{marginLeft:"140px", padding:"10px"}} >Login</h2>
+          <h2 style={{ marginLeft: "10px", padding: "10px" ,textAlign:"center"}} >Login </h2>
+          <hr />
+          <br />
       <form onSubmit={handleSubmit} className='col-9'>
         <input
           type="email"
@@ -102,7 +104,7 @@ const Login = () => {
 
         {error && <p style={{ color: 'red' }}>{error}</p>}
 
-        <button type="submit" className='btn btn-primary loginbtn'>Login</button>
+        <button type="submit" className='  loginbtn'>Login</button>
       </form>
         </div>
         </div>

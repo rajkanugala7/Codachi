@@ -73,7 +73,7 @@ export default function ClassroomDashboard() {
                             <p>{labs.length} Labs</p>
                         </div>
                     </div>
-                    <div className="card" onClick={() => navigate("/students", { state: { students, classroomId } })}>
+                    <div className="card" onClick={() => navigate("/students", { state: { students: students, classroomId } })}>
                         <div className="card-img-top">
                             <img
                                 src="https://png.pngtree.com/png-clipart/20230928/original/pngtree-kids-coding-class-png-image_13006519.png"

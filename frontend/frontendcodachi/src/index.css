@@ -50,9 +50,9 @@
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Ensures the video covers the container */
+  /* Ensures the video covers the container */
   z-index: -1; /* Places the video behind content */
-  opacity: 0.05
+  opacity: 0.25
 }
 
 /* Code editor and test cases split container (vertical split) */
@@ -460,14 +460,18 @@ opacity: 0.5;
 .lab-card {
   width: 280px;
   height: 300px;
-  border: 1px solid #272c34; /* Dark border */
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1), 0px 8px 20px rgba(0, 0, 0, 0.2); /* Soft gray shadow on all sides */
+  border: 0.5px solid #666; /* Dark border */
+  box-shadow: 
+    0px 0px 1px 1px rgba(255, 165, 0, 0.3), /* Soft orange glow */
+    0px 0px 1px 1px rgba(255, 165, 0, 0.2), /* Lighter orange spread */
+    0px 0px 1px 1px rgba(68, 68, 68, 0.1); /* Subtle deeper gray shadow for contrast */;
   border-radius: 10% !important;
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
   overflow: hidden;
   cursor: pointer;
 }
+
 .lab-card .card-body{
   background-color: #444444;
   position: relative;

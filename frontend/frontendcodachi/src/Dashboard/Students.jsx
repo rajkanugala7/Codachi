@@ -15,7 +15,8 @@ const Students = () => {
   const [loading, setLoading] = useState(false); // Track loading state
   const [error, setError] = useState(null); // Track errors
   const [pageSize] = useState(10);
-  const navigate = useNavigate();
+    const navigate = useNavigate();
+    console.log(students)
 
   // Fetch student data (if not passed in the location state)
   useEffect(() => {
@@ -47,11 +48,11 @@ const Students = () => {
 
   const columns = useMemo(
     () => [
-      { accessorKey: "studentId", header: "ID", size: 80 },
-      { accessorKey: "studentName", header: "Name", size: 150 },
+      { accessorKey: "_id", header: "ID", size: 80 },
+      { accessorKey: "name", header: "Name", size: 150 },
       { accessorKey: "email", header: "Email", size: 200 },
-      { accessorKey: "mobile", header: "Mobile No", enableSorting: false, size: 120 },
-      { accessorKey: "course", header: "Course", enableSorting: false, size: 150 },
+      
+      
       {
         accessorKey: "enrollmentDate",
         header: "Enrollment Date",

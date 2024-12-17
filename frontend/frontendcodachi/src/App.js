@@ -108,6 +108,10 @@ import EditExperiment from "./CRUDForms/EditExperiment";
 import AddStudents from "./CRUDForms/AddStudents";
 import EditStudent from "./CRUDForms/EditStudent";
 import StudentLabDashboard from "./Dashboard/StudentLabDashboard";
+import ExamPage from "./Dashboard/ExamPage";
+import LabsDashboard from "./Dashboard/LabsDashboard";
+import Students from "./Dashboard/Students";
+import Navbar from "./components/navbar/Navbar";
 
 function App() {
   
@@ -207,7 +211,8 @@ function App() {
   
   
   return (
-    <ChakraProvider theme={theme}>
+      <ChakraProvider theme={theme}>
+          <Navbar/>
       <Router>
         <Routes>
           {/* Route for Experiment List */}
@@ -227,7 +232,13 @@ function App() {
                   <Route path="editexperiment" element={<EditExperiment />} />
                   <Route path="createstudent" element={<AddStudents />} />
                   <Route path="editstudent" element={<EditStudent />} />
-                  <Route path="labs" element={ <StudentLabDashboard/>}/>
+                  <Route path="labs" element={<StudentLabDashboard />} />
+                  <Route path="exam" element={<ExamPage />} />
+                  <Route path="labsdashboard" element={<LabsDashboard/>} />
+                  
+                  <Route path="students" element={<Students/>} />
+                  
+                  
         </Routes>
       </Router>
     </ChakraProvider>

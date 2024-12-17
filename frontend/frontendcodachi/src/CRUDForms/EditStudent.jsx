@@ -15,7 +15,7 @@ export default function EditStudent() {
     useEffect(() => {
         const fetchStudent = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/students/student/${studentId}`);
+                const response = await axios.get(`https://codachi-1.onrender.com/api/students/student/${studentId}`);
                 setStudent(response.data);
                 setName(response.data.name); // Assuming student has a 'name' property
                 setEmail(response.data.email); // Assuming student has an 'email' property

@@ -78,7 +78,6 @@ const Dashboard = () => {
 
   return (
     <div>
-      <Navbar />
       
 
       {classrooms.length > 0 ? (

@@ -32,7 +32,6 @@ const Login = () => {
 
   return (
     <div className="loginpage">
-      <Navbar />
       <div className="form">
         <div className="image col-5">
           <img src="https://www.tayyari.in/_next/static/media/log-in.65f09c14.svg" alt="Login illustration" />

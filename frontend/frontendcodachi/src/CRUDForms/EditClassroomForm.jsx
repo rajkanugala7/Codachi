@@ -7,7 +7,10 @@ export default function EditClassroomForm() {
   const user = location?.state?.user;
   const role = location?.state?.role;
   const classroomId = location?.state?.classroomId;
+  const teacherId = location?.state?.teacherId;
   const navigate = useNavigate();
+  const name = location.state?.className;
+  console.log(name+"name")
 
   const [classroomData, setClassroomData] = useState({
     className: '',
@@ -49,7 +52,9 @@ export default function EditClassroomForm() {
       await axios.put(`http://localhost:8080/api/classrooms/${classroomId}`, classroomData);
       alert('Classroom updated successfully!');
       console.log('Redirecting with state:', { user, role }); // Debugging log
-      navigate('/teacher', { state: { user, role } }); // Redirect after update
+      console.log(classroomId, "class");
+      console.log(teacherId,"teacher")
+     navigate("/classroom",{state:{classroomId:classroomId,teacherId:teacherId,className:classroomData.className}})
     } catch (err) {
       console.error('Error updating classroom:', err);
       alert('Failed to update classroom. Please try again.');
@@ -61,7 +66,8 @@ export default function EditClassroomForm() {
 
   return (
     <div>
-      <h1>Edit your classroom</h1>
+      <p  style={{textAlign:"center",position:"relative",top:"10vh"}}>Edit  classroom Name</p>
+      <div className="editpage">
       <form onSubmit={handleSubmit}>
         <div>
           <label>
@@ -76,8 +82,10 @@ export default function EditClassroomForm() {
           </label>
         </div>
         {/* Add more fields as necessary */}
-        <button type="submit">Update Classroom</button>
+        <button type="submit" className='btn btn-success' style={{width:"20vw"}}>Update Classroom</button>
       </form>
-    </div>
+      <img src="./idea1.png" alt="" />
+      </div>
+      </div>
   );
 }

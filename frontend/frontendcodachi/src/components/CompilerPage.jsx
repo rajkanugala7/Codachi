@@ -14,9 +14,10 @@ export default function CompilerPage() {
   const [userInput, setUserInput] = useState(""); // State to store user input
   const [output, setOutput] = useState(""); // State to store output
   const location = useLocation();
-  const experiment = location?.state?.experiment || {};
+  const { experiment, classroomId, studentId } = location?.state || {};
   const [testCases,setTestCases]=useState([])
-  console.log("exp testcasese",experiment);
+  console.log("exp testcasese", experiment);
+  console.log(studentId,"student")
   useEffect(() => {
     // Define an async function to fetch test cases
     const fetchTestCases = async () => {
@@ -83,9 +84,7 @@ export default function CompilerPage() {
   return (
     <Box className="compiler" bg="samurai.gray" color="samurai.white" h="100vh" p={4}>
       {/* Navbar */}
-      <Box className="navbar rounded" bg="samurai.black" color="samurai.gold" p={4}>
-        <h1 style={{ fontSize: "1.2rem"  }}>CODACHI</h1>
-      </Box>
+    
 
       {/* Main Content: Problem Statement and Code Editor */}
       <Flex mt={4} h="calc(100vh - 100px)" ref={containerRef}>
@@ -154,7 +153,7 @@ export default function CompilerPage() {
 
           {/* Output Section */}
           <Box mt={4}>
-            <Output editorRef={editorRef} language={language} testCases={testCases} />
+            <Output editorRef={editorRef} language={language} testCases={testCases} expId={experiment._id} classroomId={classroomId} studentId={studentId} />
           </Box>
         </Box>
       </Flex>

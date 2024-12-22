@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../components/navbar/Navbar";
+import { Tooltip, IconButton } from "@chakra-ui/react";
+import { FaPencilAlt } from "react-icons/fa";
 import axios from "axios";
+import { EditIcon } from "@chakra-ui/icons";
 
 export default function ClassroomDashboard() {
     const location = useLocation();
@@ -24,6 +27,7 @@ export default function ClassroomDashboard() {
     useEffect(() => {
         const fetchDetails = async () => {
             try {
+                
                 const [labsResponse, studentsResponse, classDetailsResponse] = await Promise.all([
                     axios.get(`https://codachi-1.onrender.com/api/labs/${classroomId}/${teacherId}`),
                     axios.get(`https://codachi-1.onrender.com/api/students/${classroomId}`),
@@ -45,23 +49,34 @@ export default function ClassroomDashboard() {
 
         if (classroomId && teacherId) fetchDetails();
     }, [classroomId, teacherId, initialClassName, initialRandomImage]);
+    const handleEdit = () => {
+        navigate('/editclassroom',{state:{className:className,classroomId:classroomId,teacherId:teacherId}})
+    }
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
     return (
         <div>
-            <Navbar />
             <div className="dashboard-container">
                 <video autoPlay muted loop id="bg-video">
                     <source src="./bgvideo.mp4" type="video/mp4" />
                     Your browser does not support the video tag.
                 </video>
                 <div className="classNameDiv">
-                    <h1>{className}</h1>
+                    <h1>{className} <Tooltip label="Edit Classroom Name" fontSize="md" hasArrow>
+      <IconButton
+        icon={<FaPencilAlt />}
+        aria-label="Edit Classroom Name"
+        size="md"
+        colorScheme="blue"
+                            variant="outline"
+                            onClick={handleEdit}
+      />
+    </Tooltip></h1>
                 </div>
                 <div className="cards-container">
-                    <div className="card" onClick={() => navigate("/labsDashboard", { state: { labs, classroomId, teacherId, className:className } })}>
+                    <div className="card" onClick={() => navigate("/labsDashboard", { state: { labs, classroomId:classroomId, teacherId:teacherId, className:className , studentCount:students.length ,students:students} })}>
                         <div className="card-img-top">
                             <img
                                 src="https://img.freepik.com/free-vector/programming-concept-illustration_114360-27522.jpg"
@@ -73,7 +88,7 @@ export default function ClassroomDashboard() {
                             <p>{labs.length} Labs</p>
                         </div>
                     </div>
-                    <div className="card" onClick={() => navigate("/students", { state: { students: students, classroomId } })}>
+                    <div className="card" onClick={() => navigate("/students", { state: { students: students, classroomId:classroomId, teacherId:teacherId,className: className } })}>
                         <div className="card-img-top">
                             <img
                                 src="https://png.pngtree.com/png-clipart/20230928/original/pngtree-kids-coding-class-png-image_13006519.png"

@@ -112,6 +112,7 @@ import ExamPage from "./Dashboard/ExamPage";
 import LabsDashboard from "./Dashboard/LabsDashboard";
 import Students from "./Dashboard/Students";
 import Navbar from "./components/navbar/Navbar";
+import CompletionDetails from "./Dashboard/CompletionDetails";
 
 function App() {
   
@@ -235,7 +236,7 @@ function App() {
                   <Route path="labs" element={<StudentLabDashboard />} />
                   <Route path="exam" element={<ExamPage />} />
                   <Route path="labsdashboard" element={<LabsDashboard/>} />
-                  
+                  <Route path="/completion-details" element={<CompletionDetails />}/>
                   <Route path="students" element={<Students/>} />
                   
                   

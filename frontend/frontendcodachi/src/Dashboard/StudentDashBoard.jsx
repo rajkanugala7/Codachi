@@ -11,7 +11,7 @@ const StudentDashboard = () => {
 
   // Handlers for navigation
   const handleProgrammingLabsClick = () => {
-    navigate(`/labs`, { state: { classroomId } }); // Pass classroomId to /labs
+    navigate(`/labs`, { state: { classroomId:classroomId, studentId:user._id } }); // Pass classroomId to /labs
   };
 
   const handleCoursesClick = () => {
@@ -29,7 +29,7 @@ const StudentDashboard = () => {
       <div className='navbar bg-body-tertiary'>
             <h1>CODACHI</h1>
       </div>
-      <h2>Welcome, {user?.name}!</h2>
+      <h2>Welcome, {user?.name}! {user._id} --- {classroomId }</h2>
 
       <div className="cards-container">
         <div className="card">

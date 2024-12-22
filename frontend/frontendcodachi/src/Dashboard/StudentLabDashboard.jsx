@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 export default function StudentLabDashboard() {
     const location = useLocation();
-    const { classroomId } = location?.state || {}; // Safe access with fallback
+    const { classroomId , studentId} = location?.state || {}; // Safe access with fallback
     const [labs, setLabs] = useState([]); // State to store labs
     const [loading, setLoading] = useState(true); // Loading state
     const [error, setError] = useState(null); // Error state
@@ -30,7 +30,7 @@ export default function StudentLabDashboard() {
     }, [classroomId]); // Only classroomId as dependency
 
     const handleLab = (id) => {
-        navigate('/experiments', { state: { labId: id ,role:"Student"} });
+        navigate('/experiments', { state: { labId: id , role:"Student",classroomId:classroomId,studentId:studentId} });
     };
 
     if (loading) {
@@ -43,7 +43,7 @@ export default function StudentLabDashboard() {
 
     return (
         <div className="dashboard-container">
-            <h1>Student Lab Dashboard</h1>
+            <h1>Student Lab Dashboard of class {classroomId} -- {studentId }</h1>
 
             {/* Labs Section */}
             <h2>Labs:</h2>

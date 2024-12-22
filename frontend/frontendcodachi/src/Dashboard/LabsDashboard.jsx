@@ -6,7 +6,7 @@ export default function LabsDashboard() {
   const navigate = useNavigate();
 
   // Extract state from navigation
-  const { labs = [], classroomId, teacherId, className } = location.state || {};
+  const { labs = [], classroomId, teacherId, className,studentCount,students } = location.state || {};
 
   // Find the specific lab based on classroomId
   const specificLab = labs.find((lab) => lab.classroomId === classroomId);
@@ -24,9 +24,9 @@ export default function LabsDashboard() {
 
   // Function to handle lab click
   const handleLabClick = (labId) => {
-    navigate("/experiments", { state: { labId, role: "Teacher" } });
+    navigate("/experiments", { state: { labId, role: "Teacher",studentCount:studentCount ,classroomId:classroomId , className:className,students} });
   };
-
+  console.log(studentCount,"llabs")
   return (
       <div>
            <img src="./airplane.jpg" alt="" id="airplane-bg" />

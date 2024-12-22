@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 export default function AddStudents() {
     const location = useLocation();
-    const { classroomId ,className,randomImage} = location.state || {};
+    const { classroomId ,className,randomImage,teacherId} = location.state || {};
     const [studentInput, setStudentInput] = useState(""); // For bulk input via textarea
     const [error, setError] = useState(null);
     const navigate = useNavigate();
@@ -19,7 +19,8 @@ export default function AddStudents() {
     const handleCreateStudents = async () => {
         try {
             // Parse student input
-            
+            console.log(classroomId)
+            console.log(teacherId ,"tecaher");
             const students = studentInput.trim().split("\n").map((line) => {
                 const [name, email] = line.split(",").map((item) => item.trim());
                 return { name, email, password: defaultPassword };
@@ -31,13 +32,14 @@ export default function AddStudents() {
                 return;
             }
 
+            console.log(classroomId)
             // Send request to create students
-            await axios.post("http://localhost:8080/api/students/bulk-create", {
-                classroomId,
+            await axios.post("https://codachi-1.onrender.com/api/students/bulk-create", {
+                classroomId:classroomId,
                 students,
             });
 
-            navigate("/classroom", { state: { classroomId, className, randomImage } });
+            navigate("/classroom", { state: { classroomId:classroomId, className:className, randomImage,teacherId:teacherId } });
         } catch (err) {
             console.error("Error creating students:", err);
             setError(err.response?.data?.message || "Failed to create students");
@@ -46,7 +48,7 @@ export default function AddStudents() {
 
     return (
         <div>
-            <h2>Create Students</h2>
+            <h2>Create Students for {className }</h2>
             {error && <p style={{ color: "red" }}>Error: {error}</p>}
             <textarea
                 rows="10"

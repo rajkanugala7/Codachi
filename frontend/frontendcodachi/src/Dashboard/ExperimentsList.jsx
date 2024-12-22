@@ -8,11 +8,14 @@ export default function ExperimentList() {
   const navigate = useNavigate();
   const labId = location.state?.labId;
   const role = location.state?.role; // Retrieve the role from location.state
-
+  const studentId = location.state?.studentId;
+  const classroomId = location?.state?.classroomId;
+  const className = location.state?.className;
   const [experiments, setExperiments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+  const studentCount = location.state.studentCount;
+  const students = location.state.students;
   useEffect(() => {
     const fetchExperiments = async () => {
       try {
@@ -51,16 +54,19 @@ export default function ExperimentList() {
       }
     }
   };
+  const handleDetails = (exp)=>{
+    navigate('/completion-details', {state:{exp:exp,studentCount:studentCount,classroomId:classroomId , className:className,students:students}})
+  }
 
   const handleClick = (e, exp) => {
     e.preventDefault();
     console.log("expid : ", exp._id);
-    navigate(`/compiler`, { state: { experiment: exp } });
+    navigate(`/compiler`, { state: { experiment: exp, classroomId: classroomId, studentId:studentId } });
   };
 
   return (
     <Box>
-      <Text fontSize="2xl" mb={4}>Experiments</Text>
+      <Text fontSize="2xl" mb={4}>Experiments {classroomId}---{ studentId}</Text>
 
       {role === "Teacher" && (
         <Button colorScheme="blue" onClick={handleAddExperiment} mb={4}>
@@ -101,6 +107,7 @@ export default function ExperimentList() {
                     <Button colorScheme="red" onClick={() => handleDelete(exp._id)}>
                       Delete
                     </Button>
+                    <Button colorScheme="red" onClick={()=>{handleDetails(exp)}}>Completion Details</Button>
                   </Flex>
                 )}
               </Box>

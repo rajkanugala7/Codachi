@@ -1,22 +1,21 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { MaterialReactTable } from "material-react-table";
-import Pagination from "@mui/material/Pagination";
-import Stack from "@mui/material/Stack";
 import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ThemeProvider, createTheme } from "@mui/material/styles"; // Import ThemeProvider and createTheme
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import axios from "axios";
 
 const Students = () => {
-  const [pageIndex, setPageIndex] = useState(0);
   const location = useLocation();
   const [students, setStudents] = useState(location.state?.students || []); // Default to empty array if students are not found
+  const className = location.state?.className;
+  const classroomId = location.state?.classroomId;
+  const teacherId = location.state?.teacherId;
   const [loading, setLoading] = useState(false); // Track loading state
   const [error, setError] = useState(null); // Track errors
-  const [pageSize] = useState(10);
-    const navigate = useNavigate();
-    console.log(students)
+  const navigate = useNavigate();
 
   // Fetch student data (if not passed in the location state)
   useEffect(() => {
@@ -26,10 +25,9 @@ const Students = () => {
       setTimeout(() => {
         // Replace with actual API call
         setStudents([
-          // Example students data
           { studentId: 1, studentName: "John Doe", email: "john@example.com", mobile: "1234567890", course: "Math", enrollmentDate: "2024-01-01" },
           { studentId: 2, studentName: "Jane Doe", email: "jane@example.com", mobile: "0987654321", course: "Science", enrollmentDate: "2024-01-02" },
-          // More students...
+          // Add more student data here...
         ]);
         setLoading(false);
       }, 1000); // Simulate loading delay
@@ -38,35 +36,42 @@ const Students = () => {
 
   // Handlers for actions
   const handleEdit = (row) => {
-    navigate("/editstudent", { state: { row } }); // Pass the student data
+    console.log(teacherId)
+    navigate("/editstudent", { state: { row , className:className,teacherId:teacherId,classroomId:classroomId} }); // Pass the student data
   };
 
-  const handleDelete = (row) => {
-    alert(`Delete student: ${row.studentName}`);
-    // Implement delete logic here
+  const handleDelete = async (row) => {
+    if (window.confirm(`Are you sure to delete ${row.name}?`)) {
+      try {
+        // Send a DELETE request to the server
+        const response = await axios.delete(`https://codachi-1.onrender.com/api/students/${row._id}`);
+  
+        // If the deletion is successful, remove the student from the local state
+        alert(`Student ${row.name} deleted successfully!`);
+        
+        // Optionally, you can update the state here to remove the student from the UI
+        // For example, if you have a students state, you can filter it out
+        setStudents((prevStudents) => prevStudents.filter(student => student._id !== row._id));
+        
+      } catch (err) {
+        console.error("Error deleting student:", err);
+        alert("Failed to delete student. Please try again later.");
+      }
+    }
   };
+  
 
   const columns = useMemo(
     () => [
-      { accessorKey: "_id", header: "ID", size: 80 },
-      { accessorKey: "name", header: "Name", size: 150 },
-      { accessorKey: "email", header: "Email", size: 200 },
-      
-      
-      {
-        accessorKey: "enrollmentDate",
-        header: "Enrollment Date",
-        Cell: ({ renderedCellValue }) =>
-          new Date(renderedCellValue).toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          }),
-        size: 120,
-      },
+      { accessorKey: "_id", header: "id", size: 100 },
+    
+      { accessorKey: "rollno", header: "Roll No.", size: 100 },
+      { accessorKey: "name", header: "Name", size: 150 }, // Name column
+ // Roll Number column
+      { accessorKey: "email", header: "Email", size: 200 }, // Email column
       {
         accessorKey: "actions",
-        header: "Action",
+        header: "Actions",
         Cell: ({ row }) => (
           <>
             <IconButton onClick={() => handleEdit(row.original)}>
@@ -78,16 +83,12 @@ const Students = () => {
           </>
         ),
         enableSorting: false,
-        size: 150,
+        size: 150, // Actions column
       },
     ],
     []
   );
-
-  // Handle page change
-  const handlePageChange = (event, newPage) => {
-    setPageIndex(newPage - 1); // Update the page index
-  };
+  
 
   if (loading) {
     return <div>Loading...</div>;
@@ -97,22 +98,19 @@ const Students = () => {
     return <div>Error: {error}</div>;
   }
 
-  // Slice students based on pagination state
-  const paginatedStudents = students.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
-
   return (
     <div className="dashboardPage">
       <div className="dashboard">
-        <h3>Student List</h3>
-        <div className="dtop">
-          <span>Total count = {students.length}</span>
-          <button className="btn btn-primary p-3" onClick={() => navigate("/createstudent")}>
-            Create Student
+        <h3>Students { className} </h3>
+        <div className="dtop" style={{marginLeft:"76vw",marginRight:"1.5rem"}}>
+          <span>Total Students = {students.length}</span>
+          <button className="btn btn-primary p-3" onClick={() => navigate("/createstudent", {state:{classroomId:classroomId,teacherId:teacherId,className:className}})}>
+            Add new Student
           </button>
         </div>
         <MaterialReactTable
           columns={columns}
-          data={paginatedStudents} // Use paginated data
+          data={students} // Display all students
           enableSorting
           localization={{
             toolbarSearchPlaceholder: "Search for keyword",
@@ -120,7 +118,7 @@ const Students = () => {
           }}
           muiTableContainerProps={{
             sx: {
-              maxHeight: "calc(100vh - 180px)",
+              maxHeight: "calc(100vh - 180px)", // Allow scrolling for large datasets
               overflowY: "auto",
               width: "100%",
             },
@@ -137,18 +135,6 @@ const Students = () => {
             },
           }}
         />
-        <div style={{ display: "flex", justifyContent: "center", padding: "10px" }}>
-          <Stack spacing={2} justifyContent="center" alignItems="center">
-            <Pagination
-              count={Math.ceil(students.length / pageSize)} // Total pages based on data length and pageSize
-              page={pageIndex + 1}
-              onChange={handlePageChange}
-              color="primary"
-              variant="outlined"
-              shape="rounded"
-            />
-          </Stack>
-        </div>
       </div>
     </div>
   );

@@ -1,25 +1,38 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-// Import the TestCase model
-const TestCase = require('./TestCase'); // Adjust the path if needed
-
 // Experiment schema
 const ExperimentSchema = new Schema({
-    name: { type: String, required: true },
-    problemStatement: { type: String, required: true },
-    testCases: [{ 
-        type: Schema.Types.ObjectId, 
-        ref: 'TestCase',
+    name: {
+        type: String,
+        required: true
+    },
+    problemStatement: {
+        type: String,
+    },
+    testCases: [{
+        type: Schema.Types.ObjectId,
+        ref: 'TestCase', // Reference to the TestCase model
         default: [] // Default to an empty array
-    }], 
-    completedBy: [{
-        student: { type: Schema.Types.ObjectId, ref: 'Student' },
-        completedAt: { type: Date, default: Date.now }
     }],
-    default: [] // Default to an empty array for completedBy
+    classroomProgress: {
+        type: Map, // Map for classroom-specific progress
+        of: [{
+            studentId: {
+                type: Schema.Types.ObjectId,
+                ref: 'Student', // Reference to the Student model
+                required: true
+            },
+            completedAt: {
+                type: Date,
+                default: Date.now // Automatically store completion timestamp
+            }
+        }],
+        default: {} // Initialize the map as an empty object
+    }
 });
 
 // Model for Experiment
 const Experiment = mongoose.model('Experiment', ExperimentSchema);
+
 module.exports = Experiment;

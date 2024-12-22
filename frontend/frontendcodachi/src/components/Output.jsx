@@ -1,8 +1,11 @@
 import { Box, Text, Button, Textarea, Input } from "@chakra-ui/react";
 import { useState } from "react"; // Import useState to manage state
 import { executeCode } from "./api";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
 
-export default function Output({ editorRef, language, testCases }) {
+export default function Output({ editorRef, language, testCases, expId, classroomId, studentId }) {
+  const location = useLocation();
   const [output, setOutput] = useState(""); // State to store the output
   const [userInput, setUserInput] = useState(""); // State for user input
   const [isLoading, setIsLoading] = useState(false); // Loading state
@@ -15,13 +18,13 @@ export default function Output({ editorRef, language, testCases }) {
       setOutput("Please enter code to run."); // Handle empty code
       return;
     }
-  
+
     try {
       setIsLoading(true);
       setIsError(false);
-  
+
       let result;
-  
+
       // If custom input is enabled and user input exists, pass user input
       if (inputBox && userInput) {
         result = await executeCode(language, sourceCode, userInput); // Pass only user input
@@ -29,14 +32,31 @@ export default function Output({ editorRef, language, testCases }) {
         // Otherwise, pass test cases
         result = await executeCode(language, sourceCode, "", testCases); // Pass test cases if no custom input
       }
-  
+
       // Check the result from the API and update the output accordingly
-      if (result && result.finalResult) {
+      if (result) {
         setOutput(result.finalResult); // Set the final result as output
-        if (result.isError)
-          setIsError(true)
-        else
-          setIsError(false)
+
+        if (result.finalResult === "Accepted") {
+          try {
+            const response = await axios.post(
+              `http://localhost:8080/api/experiments/${expId}`,
+              {
+                classroomId: classroomId,
+                studentId: studentId,
+              }
+            );
+            console.log("Response:", response.data); // Optional: log the response if needed
+          } catch (err) {
+            console.error("Error:", err);
+          }
+        }
+
+        if (result.isError) {
+          setIsError(true);
+        } else {
+          setIsError(false);
+        }
       } else {
         setOutput("No output received.");
       }
@@ -48,7 +68,7 @@ export default function Output({ editorRef, language, testCases }) {
       setIsLoading(false);
     }
   };
-  
+
   return (
     <Box>
       <Text fontWeight="bold" fontSize="xl">

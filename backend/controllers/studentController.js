@@ -86,7 +86,7 @@ const getAllStudents = async (req, res) => {
 const bulkCreateStudents = async (req, res) => {
     try {
         const { classroomId, students } = req.body;
-
+        console.log(classroomId);
         // Find existing students by email
         const existingStudents = await Student.find({ email: { $in: students.map(s => s.email) } });
 

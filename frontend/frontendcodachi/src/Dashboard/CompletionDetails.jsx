@@ -22,7 +22,7 @@ export default function CompletionDetails() {
     // Fetch experiment details from backend using `experimentId`
     if (experimentId) {
       axios
-        .get(`http://localhost:8080/api/experiments/exp/${experimentId}`) // Update this to your API endpoint
+        .get(`https://codachi-1.onrender.com/api/experiments/exp/${experimentId}`) // Update this to your API endpoint
         .then((response) => {
           setExperiment(response.data);
           setLoading(false);

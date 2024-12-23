@@ -36,7 +36,7 @@ export default function EditExperiment() {
   const handleDeleteTestCase = async (index) => {
     const testCaseId = testCases[index]._id;
     try {
-      await axios.delete(`http://localhost:8080/api/testcases/${testCaseId}`);
+      await axios.delete(`https://codachi-1.onrender.com/api/testcases/${testCaseId}`);
       setTestCases(testCases.filter((_, i) => i !== index));
       alert("Test case deleted successfully!");
     } catch (err) {

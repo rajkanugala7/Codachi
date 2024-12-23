@@ -51,7 +51,7 @@ export default function EditExperiment() {
     try {
       await axios.delete(`https://codachi-1.onrender.com/api/testcases/experiment/${experiment._id}`);
       const testCasePromises = testCases.map((testCase) =>
-        axios.post("http://localhost:8080/api/testcases", {
+        axios.post("https://codachi-1.onrender.com/api/testcases", {
           input: testCase.input,
           expectedOutput: testCase.output,
           experimentId: experiment._id,

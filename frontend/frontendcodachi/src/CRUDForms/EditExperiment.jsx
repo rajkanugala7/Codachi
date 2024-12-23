@@ -49,7 +49,7 @@ export default function EditExperiment() {
     e.preventDefault();
 
     try {
-      await axios.delete(`http://localhost:8080/api/testcases/experiment/${experiment._id}`);
+      await axios.delete(`https://codachi-1.onrender.com/api/testcases/experiment/${experiment._id}`);
       const testCasePromises = testCases.map((testCase) =>
         axios.post("http://localhost:8080/api/testcases", {
           input: testCase.input,

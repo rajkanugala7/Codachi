@@ -47,7 +47,7 @@ export default function AddStudents() {
     };
 
     return (
-        <div>
+        <div >
             <h2>Create Students for {className }</h2>
             {error && <p style={{ color: "red" }}>Error: {error}</p>}
             <textarea

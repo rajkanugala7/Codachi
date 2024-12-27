@@ -16,7 +16,7 @@ export default function CompilerPage() {
   const location = useLocation();
   const { experiment, classroomId, studentId } = location?.state || {};
   const [testCases,setTestCases]=useState([])
-  console.log("exp testcasese", experiment);
+  console.log("exp ", experiment);
   console.log(studentId,"student")
   useEffect(() => {
     // Define an async function to fetch test cases

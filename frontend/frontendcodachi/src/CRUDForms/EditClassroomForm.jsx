@@ -49,7 +49,7 @@ export default function EditClassroomForm() {
     e.preventDefault();
     try {
       // Update the classroom with correct data format
-      await axios.put(`http://localhost:8080/api/classrooms/${classroomId}`, classroomData);
+      await axios.put(`https://codachi-1.onrender.com/api/classrooms/${classroomId}`, classroomData);
       alert('Classroom updated successfully!');
       console.log('Redirecting with state:', { user, role }); // Debugging log
       console.log(classroomId, "class");

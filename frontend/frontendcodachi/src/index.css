@@ -125,7 +125,7 @@ code, pre {
   --f-font-whyte-variable: '__ABCWhytePlusVariable_1b19d2', '__ABCWhytePlusVariable_Fallback_1b19d2', Whyte, sans-serif;
   --f-font-sans: '__figmaSans_a26a19', '__figmaSans_Fallback_a26a19', SF Pro Display, system-ui, helvetica, sans-serif;
   --f-font-mono: '__figmaMono_16ac6d', '__figmaMono_Fallback_16ac6d', SF Mono, menlo, monospace;
-  --f-statsig-overlay: #FFFFFF;
+  --f-statsig-overlay: #D8D8D8;
   --f-vh: 1vh;
   --f-lego-block-padding: 5rem;
   --f-max-content-width: 1440px;
@@ -142,20 +142,17 @@ body {
   padding: 0;
   width: 100vw;
   height: 100vh;
-  
   font-family: var(--f-font-sans, '__figmaSans_a26a19', '__figmaSans_Fallback_a26a19', SF Pro Display, system-ui, helvetica, sans-serif);
   font-optical-sizing: auto;
   font-size: 1.125rem;
   line-height: 1.4;
   font-weight: 330;
   font-variation-settings: "wdth" 98, "wght" 330;
-
   font-weight: 270;
   letter-spacing: 0.045rem; /* Increased letter spacing */
   line-height: 3; /* Increased line height for more space between lines */
   color: var(--primary-color);
 
-  background-color: var(--secondary-color);
   background-image: radial-gradient(circle, var(--primary-color) 1px, transparent 1px);
   background-size: 20px 20px;
 }
@@ -338,13 +335,14 @@ form p {
     display: flex;
     
     border-radius: 4%;
-    margin-top: 100px;
+    padding-top: 100px;
     margin-left: 150px;
 }
 .loginpage{
   width: 100vw;
   height: 100vh;
   background-color: #f8f8f2;
+  
 
 }
 .form .image img{
@@ -366,9 +364,16 @@ form p {
 .navbar {
   background-color: #212929;
   box-sizing: border-box;
-  box-shadow: 2px 2px 5px #ccc; /* Adds shadow with horizontal and vertical offset */
-  height: 8vh;
+  height: 10vh;
+  position: sticky;
+  top: 0; /* Ensure it sticks to the top */
+  display: flex; /* For layout alignment */
+  align-items: center; /* Center vertically */
+  justify-content: space-between; /* Distribute content */
+  padding: 0 20px; /* Add horizontal padding */
+  z-index: 1000; /* Prevent overlap */
 }
+
 .cards{
   display: flex;
   flex-direction: row;
@@ -472,7 +477,7 @@ opacity: 0.5;
   border-top-left-radius: 20px; /* Matches the card's border-radius */
   border-top-right-radius: 20px; /* Matches the card's border-radius */
   object-fit:contain; /* Ensures the image scales properly */
-  opacity: 0.5;
+  opacity: 0.7;
   background-color: white;
 }
 
@@ -629,4 +634,43 @@ opacity: 0.5;
 .classimg{
   width: 30vw;
   height: 30vh;
+}
+.homecards-container{
+  display:  flex;
+  justify-content: center;
+  gap: 3vw;
+  margin-top: 13vh;
+  flex-wrap: wrap;
+}
+.homecards-container .card{
+  width: 20vw;
+  
+}
+.homecards-container .card .card-body{
+  font-weight: 500;
+}
+.homecards-container .card .card-img-top {
+  max-width: 60%; /* Scale within the container */
+  height: auto; /* Maintain aspect ratio */
+  opacity: 1; /* Ensure full visibility */
+  display: block; /* Ensure proper alignment within the card */
+  margin: 0 auto; /* Center the image horizontally */
+  padding: 1rem;
+}
+
+.experimentsPage {
+   background-color: #1B1B1B;
+  
+  width: 100vw;
+  height: 100vh;
+  overflow-y: auto; /* Vertical scrolling only */
+  scrollbar-width: none; /* Hides scrollbar in Firefox */
+  color: white;
+}
+
+.experimentsPage ::-webkit-scrollbar {
+  display: none; /* Hides scrollbar in WebKit browsers */
+}
+.experimentsPage .exp{
+  background-color: "red";
 }

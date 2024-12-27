@@ -1,21 +1,27 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Box, Text, Button, Flex, Spinner, Alert, AlertIcon } from "@chakra-ui/react";
+import { Box, Text, Button, Flex, Spinner, Alert, AlertIcon, Img } from "@chakra-ui/react";
 import axios from "axios";
 
 export default function ExperimentList() {
   const location = useLocation();
   const navigate = useNavigate();
-  const labId = location.state?.labId;
-  const role = location.state?.role; // Retrieve the role from location.state
-  const studentId = location.state?.studentId;
-  const classroomId = location?.state?.classroomId;
-  const className = location.state?.className;
+
+  const {
+    labId,
+    role,
+    studentId,
+    classroomId,
+    className,
+    studentCount,
+    students,
+  } = location.state || {};
+
   const [experiments, setExperiments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const studentCount = location.state.studentCount;
-  const students = location.state.students;
+  console.log(role);
+
   useEffect(() => {
     const fetchExperiments = async () => {
       try {
@@ -29,24 +35,18 @@ export default function ExperimentList() {
       }
     };
 
-    if (labId) {
-      fetchExperiments();
-    }
+    if (labId) fetchExperiments();
   }, [labId]);
 
-  const handleAddExperiment = () => {
-    navigate('/addExperiment', { state: { labId } });
-  };
+  const handleAddExperiment = () => navigate("/addExperiment", { state: { labId } });
 
-  const handleEdit = (exp) => {
-    navigate('/editExperiment', { state: { experiment: exp, labId } });
-  };
+  const handleEdit = (exp) => navigate("/editExperiment", { state: { experiment: exp, labId } });
 
   const handleDelete = async (expId) => {
     if (window.confirm("Are you sure you want to delete this experiment?")) {
       try {
         await axios.delete(`https://codachi-1.onrender.com/api/experiments/${expId}`);
-        setExperiments(prev => prev.filter(exp => exp._id !== expId));
+        setExperiments((prev) => prev.filter((exp) => exp._id !== expId));
         alert("Experiment deleted successfully!");
       } catch (err) {
         console.error("Error deleting experiment:", err);
@@ -54,23 +54,47 @@ export default function ExperimentList() {
       }
     }
   };
-  const handleDetails = (exp)=>{
-    navigate('/completion-details', {state:{exp:exp,studentCount:studentCount,classroomId:classroomId , className:className,students:students}})
-  }
+
+  const handleDetails = (exp) => {
+    navigate("/completion-details", {
+      state: { exp, studentCount, classroomId, className, students },
+    });
+  };
 
   const handleClick = (e, exp) => {
     e.preventDefault();
-    console.log("expid : ", exp._id);
-    navigate(`/compiler`, { state: { experiment: exp, classroomId: classroomId, studentId:studentId } });
+    navigate("/compiler", { state: { experiment: exp, classroomId, studentId } });
   };
 
+  const isCompleted = (exp) =>
+    classroomId in exp.classroomProgress &&
+    exp.classroomProgress[classroomId]?.some((progress) => progress.studentId === studentId);
+
   return (
-    <Box>
-      <Text fontSize="2xl" mb={4}>Experiments {classroomId}---{ studentId}</Text>
+    <Box className="experimentsPage">
+      <Text
+        fontSize="2xl"
+        fontWeight="500"
+        mb={4}
+        backgroundColor="#9F9FFF"
+        height="10vh"
+        width="97vw"
+        margin="1.2vw"
+        padding="1rem"
+        borderRadius="1rem"
+      >
+        Experiments
+      </Text>
 
       {role === "Teacher" && (
-        <Button colorScheme="blue" onClick={handleAddExperiment} mb={4}>
-          Add Experiment
+        <Button
+          colorScheme="blue"
+          onClick={handleAddExperiment}
+          mb={4}
+          padding="1rem"
+          fontSize="1rem"
+        >
+          Add a New Experiment
         </Button>
       )}
 
@@ -84,30 +108,79 @@ export default function ExperimentList() {
       ) : (
         <>
           {experiments.length > 0 ? (
-            experiments.map((exp) => (
+            experiments.map((exp, index) => (
               <Box
                 key={exp._id}
                 cursor="pointer"
                 p={4}
-                borderWidth="3px"
-                borderRadius="md"
-                borderStyle="dashed"
+                height="auto"
+                color="#D3D3F2"
+                borderRadius="1rem"
+                boxShadow="lg"
                 mb={4}
-                _hover={{ backgroundColor: "gray.100" }}
+                width="90%"
+                mx="auto"
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+                _hover={{ backgroundColor: "#2F3339", boxShadow: "xl" }}
+                onClick={(e) => handleClick(e, exp)}
               >
-                <Text fontSize="lg" fontWeight="bold" onClick={(e) => handleClick(e, exp)}>
-                  {exp.name}
-                </Text>
+                <Flex align="center" gap={4}>
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    borderRadius="full"
+                    width="3rem"
+                    height="3rem"
+                    backgroundColor="#2F3339"
+                    color="white"
+                    fontWeight="700"
+                    fontSize="lg"
+                  >
+                    {index + 1}
+                  </Box>
+                  <Text fontSize="lg" fontWeight="bold" marginTop="1rem" p={4}>
+                    {exp.name}
+                  </Text>
+                </Flex>
+
+                {role === "student" && (
+                  <Text color={isCompleted(exp) ? "green" : "red"} fontWeight="bold">
+                    {isCompleted(exp) ? <><img src="./tester.png" alt="" width={"60vw"} /></> : <><img src="https://cdn-icons-png.freepik.com/256/10712/10712091.png?uid=R168975488&ga=GA1.1.1638776978.1715106991&semt=ais_hybrid" alt="" width={"60vw"} /></>}
+                  </Text>
+                )}
 
                 {role === "Teacher" && (
-                  <Flex mt={2} gap={2}>
-                    <Button colorScheme="yellow" onClick={() => handleEdit(exp)}>
+                  <Flex gap={2} align="center">
+                    <Button
+                      colorScheme="yellow"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEdit(exp);
+                      }}
+                    >
                       Edit
                     </Button>
-                    <Button colorScheme="red" onClick={() => handleDelete(exp._id)}>
+                    <Button
+                      colorScheme="red"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(exp._id);
+                      }}
+                    >
                       Delete
                     </Button>
-                    <Button colorScheme="red" onClick={()=>{handleDetails(exp)}}>Completion Details</Button>
+                    <Button
+                      colorScheme="purple"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDetails(exp);
+                      }}
+                    >
+                      Completion Details
+                    </Button>
                   </Flex>
                 )}
               </Box>

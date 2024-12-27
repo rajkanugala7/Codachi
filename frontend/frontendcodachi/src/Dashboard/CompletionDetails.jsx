@@ -22,7 +22,7 @@ export default function CompletionDetails() {
     // Fetch experiment details from backend using `experimentId`
     if (experimentId) {
       axios
-        .get(`http://localhost:8080/api/experiments/exp/${experimentId}`) // Update this to your API endpoint
+        .get(`https://codachi-1.onrender.com/api/experiments/exp/${experimentId}`) // Update this to your API endpoint
         .then((response) => {
           setExperiment(response.data);
           setLoading(false);
@@ -62,7 +62,7 @@ export default function CompletionDetails() {
       {
         label: "# of Students",
         data: [completedStudents.length, notCompletedStudents.length],
-        backgroundColor: ["#4caf50", "#f44336"], // Green and red
+        backgroundColor: ["#0FEE8A", "#F54F47"], // Green and red
         borderColor: ["#4caf50", "#f44336"],
         borderWidth: 1,
       },
@@ -93,7 +93,7 @@ export default function CompletionDetails() {
   };
 
   return (
-    <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+    <div style={{ display: "flex", justifyContent: "space-evenly", backgroundColor:"#F0F0F7" , height:"100vh"}}>
       <div style={{ maxWidth: "40vw", textAlign: "center" }}>
         <h3> Experiment: {experiment.name}</h3>
         <p>

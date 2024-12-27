@@ -36,7 +36,7 @@ export default function EditExperiment() {
   const handleDeleteTestCase = async (index) => {
     const testCaseId = testCases[index]._id;
     try {
-      await axios.delete(`http://localhost:8080/api/testcases/${testCaseId}`);
+      await axios.delete(`https://codachi-1.onrender.com/api/testcases/${testCaseId}`);
       setTestCases(testCases.filter((_, i) => i !== index));
       alert("Test case deleted successfully!");
     } catch (err) {
@@ -49,9 +49,9 @@ export default function EditExperiment() {
     e.preventDefault();
 
     try {
-      await axios.delete(`http://localhost:8080/api/testcases/experiment/${experiment._id}`);
+      await axios.delete(`https://codachi-1.onrender.com/api/testcases/experiment/${experiment._id}`);
       const testCasePromises = testCases.map((testCase) =>
-        axios.post("http://localhost:8080/api/testcases", {
+        axios.post("https://codachi-1.onrender.com/api/testcases", {
           input: testCase.input,
           expectedOutput: testCase.output,
           experimentId: experiment._id,

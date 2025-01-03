@@ -113,6 +113,9 @@ import LabsDashboard from "./Dashboard/LabsDashboard";
 import Students from "./Dashboard/Students";
 import Navbar from "./components/navbar/Navbar";
 import CompletionDetails from "./Dashboard/CompletionDetails";
+import CreateExam from "./CRUDForms/CreateExam";
+import TestsDashBoard from "./Dashboard/TestsDashBoard";
+import Exam from "./Dashboard/Exam";
 
 function App() {
   
@@ -234,11 +237,14 @@ function App() {
                   <Route path="createstudent" element={<AddStudents />} />
                   <Route path="editstudent" element={<EditStudent />} />
                   <Route path="labs" element={<StudentLabDashboard />} />
-                  <Route path="exam" element={<ExamPage />} />
+                 
                   <Route path="labsdashboard" element={<LabsDashboard/>} />
                   <Route path="/completion-details" element={<CompletionDetails />}/>
-                  <Route path="students" element={<Students/>} />
+                  <Route path="students" element={<Students />} />
+                  <Route path="newtest" element={<CreateExam/>} />
+                  <Route path="tests" element={<TestsDashBoard/>}/>
                   
+                  <Route path="exam" element={<Exam/>}/>
                   
         </Routes>
       </Router>

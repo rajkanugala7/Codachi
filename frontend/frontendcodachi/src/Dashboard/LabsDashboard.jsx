@@ -6,10 +6,7 @@ export default function LabsDashboard() {
   const navigate = useNavigate();
 
   // Extract state from navigation
-  const { labs = [], classroomId, teacherId, className,studentCount,students } = location.state || {};
-
-  // Find the specific lab based on classroomId
-  const specificLab = labs.find((lab) => lab.classroomId === classroomId);
+  const { labs = [], classroomId, teacherId, className, studentCount, students } = location.state || {};
 
   // Sample images array
   const images = [
@@ -24,35 +21,47 @@ export default function LabsDashboard() {
 
   // Function to handle lab click
   const handleLabClick = (labId) => {
-    navigate("/experiments", { state: { labId, role: "Teacher",studentCount:studentCount ,classroomId:classroomId , className:className,students} });
+    navigate("/experiments", {
+      state: { labId, role: "Teacher", studentCount, classroomId, className, students },
+    });
   };
-  console.log(studentCount,"llabs")
+
+  // Function to handle new lab creation
+  const handleCreateLab = () => {
+    navigate("/createlab", {
+      state: { classroomId, teacherId, className },
+    });
+  };
+
   return (
-      <div>
-           <img src="./airplane.jpg" alt="" id="airplane-bg" />
+    <div>
+      <img src="./airplane.jpg" alt="" id="airplane-bg" />
       <div className="classNameDiv">
         <h1>{className}</h1>
       </div>
 
-      {/* Display specific lab or a fallback message */}
-     
+      {/* Create Lab Button */}
+      <div className="create-lab-btn-container">
+        <button className="create-lab-btn" onClick={handleCreateLab}>
+          <span>+</span>
+        </button>
+      </div>
 
       <h3>All Labs</h3>
       <div className="cards">
         {labs.length > 0 ? (
           labs.map((lab, index) => (
-            <div key={lab._id || index} className="lab-card" onClick={() => handleLabClick(lab._id)}>
+            <div
+              key={lab._id || index}
+              className="lab-card"
+              onClick={() => handleLabClick(lab._id)}
+            >
               <img
                 src={images[index % images.length]}
                 alt={`Lab ${index + 1}`}
                 className="card-img-top"
               />
-              <h3
-                
-                className="card-body"
-              >
-                {lab.title || lab.labName || "Unnamed Lab"}
-              </h3>
+              <h3 className="card-body">{lab.title || lab.labName || "Unnamed Lab"}</h3>
             </div>
           ))
         ) : (

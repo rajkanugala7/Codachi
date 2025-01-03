@@ -405,7 +405,7 @@ const labRoutes = require('./routes/labRoutes');
 const experimentRoutes = require('./routes/experimentRoutes');
 const testCaseRoutes = require('./routes/testCaseRoutes');
 const authRoutes=require("./routes/Auth");
-
+const ExamRoutes=require("./routes/ExamRoutes")
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -426,6 +426,7 @@ app.use('/api/teachers', teacherRoutes);
 app.use('/api/labs', labRoutes);
 app.use('/api/experiments', experimentRoutes);
 app.use('/api/testcases', testCaseRoutes);
+app.use('/api/exam', ExamRoutes)
 
 // Start the server
 app.listen(PORT, () => {

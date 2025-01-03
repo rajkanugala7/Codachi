@@ -65,6 +65,9 @@ export default function ExperimentList() {
     e.preventDefault();
     navigate("/compiler", { state: { experiment: exp, classroomId, studentId } });
   };
+  const handleExam = (e) => {
+    navigate("/newtest",{state:{experiments:experiments, classroomId:classroomId }})
+  }
 
   const isCompleted = (exp) =>
     classroomId in exp.classroomProgress &&
@@ -87,6 +90,7 @@ export default function ExperimentList() {
       </Text>
 
       {role === "Teacher" && (
+        <div>
         <Button
           colorScheme="blue"
           onClick={handleAddExperiment}
@@ -95,7 +99,9 @@ export default function ExperimentList() {
           fontSize="1rem"
         >
           Add a New Experiment
-        </Button>
+          </Button>
+        <Button onClick={handleExam}>Create an Exam</Button>
+        </div>
       )}
 
       {loading ? (

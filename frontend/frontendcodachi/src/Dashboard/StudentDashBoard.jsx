@@ -20,9 +20,10 @@ const StudentDashboard = () => {
     console.log('Courses Clicked');
   };
 
-  const handlePracticeClick = () => {
+  const handleTestsClick = () => {
     // Add navigation if needed
-    console.log('Practice Clicked');
+    
+   navigate('/tests', {state:{classroomId:classroomId,role:"Student",studentId:user._id}})
   };
 
   return (
@@ -43,16 +44,17 @@ const StudentDashboard = () => {
 
         <div className="card" onClick={handleCoursesClick}>
         <img src="./online-education.png" alt="" className='card-img-top' />
-          <p>Explore various courses and materials for your studies.</p>
+          <p>Explore various courses and <br />
+            materials for your studies.</p>
           <div  className='card-body'>Courses</div>
         </div>
 
-        <div className="card" onClick={handlePracticeClick}>
+        <div className="card" onClick={handleTestsClick}>
         <img src="./target.png" alt="" className='card-img-top' />
-          <p>Practice problems to strengthen your understanding.</p>
-          <div  className='card-body'>Start Practice</div>
+          <p>Attempt your test</p>
+          <div  className='card-body'>Tests</div>
         </div>
-        <div className="card" onClick={handlePracticeClick}>
+        <div className="card" >
         <img src="./promotion.png" alt="" className="card-img-top"  />
           <p>Contact us for any queries</p>
           <div  className='card-body'>Contact us</div>

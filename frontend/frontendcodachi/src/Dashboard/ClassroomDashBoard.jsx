@@ -53,6 +53,10 @@ export default function ClassroomDashboard() {
         navigate('/editclassroom',{state:{className:className,classroomId:classroomId,teacherId:teacherId}})
     }
 
+    const handleTestsClick = () => {
+        navigate("/tests", {state:{classroomId:classroomId, role:"Teacher"}})
+    }
+
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
@@ -100,6 +104,16 @@ export default function ClassroomDashboard() {
                             <p>{students.length} Students</p>
                         </div>
                     </div>
+                    <div className="card" onClick={handleTestsClick}>
+        <img src="./target.png" alt="" className='card-img-top' p="4"/>
+          
+          
+                        <div className='card-body'>
+                            
+                            <h1>Tests</h1>
+                            <p>Attempt your test</p>
+                        </div>
+        </div>
                 </div>
             </div>
         </div>

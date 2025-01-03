@@ -21,6 +21,11 @@ const ClassroomSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Lab',
         default: []  // Start with an empty array for labs
+    }],
+    testIds: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Test', // Reference to the Test model
+        default: []  // Array of test IDs associated with the classroom
     }]
 });
 

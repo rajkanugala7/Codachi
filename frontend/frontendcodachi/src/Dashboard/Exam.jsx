@@ -109,6 +109,17 @@ export default function Exam() {
         }
         setIsExamStarted(true);
     };
+    const handleGoFullscreenButton = () => {
+        if (examContainerRef.current?.requestFullscreen) {
+            examContainerRef.current.requestFullscreen().catch((err) => {
+                console.error("Failed to enter fullscreen:", err);
+                alert("Unable to enter fullscreen. Please try again.");
+            });
+        } else {
+            alert("Fullscreen mode is not supported on this browser.");
+        }
+    };
+    
 
     const endExam = () => {
         try {
@@ -159,7 +170,7 @@ export default function Exam() {
                         <p>Time Left: {formatTime(timeLeft)}</p>
                         <p>Tab Switch Count: {tabSwitchCount}</p>
                         {!isFullscreen && (
-                            <button style={{ background: "#007bff", color: "#fff" }}>Go Fullscreen</button>
+                            <button style={{ background: "#007bff", color: "#fff" }} onClick={handleGoFullscreenButton}>Go Fullscreen</button>
                         )}
                         <button onClick={handleSubmit} style={{ background: "#28a745", color: "#fff" }}>
                             Submit Exam

@@ -19,20 +19,29 @@ export default function Exam() {
     const examContainerRef = useRef(null);
     const timerRef = useRef(null);
 
+    // Timer effect
     useEffect(() => {
-        const startTimer = () => {
+        if (isExamStarted && !timerRef.current) {
             timerRef.current = setInterval(() => {
                 setTimeLeft((prev) => {
                     if (prev <= 1) {
                         clearInterval(timerRef.current);
+                        timerRef.current = null;
                         endExam();
                         return 0;
                     }
                     return prev - 1;
                 });
             }, 1000);
-        };
+        }
 
+        return () => {
+            clearInterval(timerRef.current);
+        };
+    }, [isExamStarted]);
+
+    // Fullscreen and visibility change listeners
+    useEffect(() => {
         const handleFullscreenChange = () => {
             setIsFullscreen(!!document.fullscreenElement);
             if (!document.fullscreenElement && isExamStarted && !isExamCompleted) {
@@ -58,6 +67,19 @@ export default function Exam() {
             }
         };
 
+        document.addEventListener("fullscreenchange", handleFullscreenChange);
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+        document.addEventListener("keydown", handleKeydown);
+
+        return () => {
+            document.removeEventListener("fullscreenchange", handleFullscreenChange);
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+            document.removeEventListener("keydown", handleKeydown);
+        };
+    }, [isExamStarted, isExamCompleted, tabSwitchCount]);
+
+    // Fetch experiments on mount
+    useEffect(() => {
         const fetchExperiments = async () => {
             if (!set || !Array.isArray(set)) {
                 setError("Invalid experiment set provided.");
@@ -80,25 +102,8 @@ export default function Exam() {
             }
         };
 
-        if (isExamStarted && !timerRef.current) {
-            startTimer();
-        }
-
-        if (set) {
-            fetchExperiments();
-        }
-
-        document.addEventListener("fullscreenchange", handleFullscreenChange);
-        document.addEventListener("visibilitychange", handleVisibilityChange);
-        document.addEventListener("keydown", handleKeydown);
-
-        return () => {
-            clearInterval(timerRef.current);
-            document.removeEventListener("fullscreenchange", handleFullscreenChange);
-            document.removeEventListener("visibilitychange", handleVisibilityChange);
-            document.removeEventListener("keydown", handleKeydown);
-        };
-    }, [isExamStarted, set, tabSwitchCount, isExamCompleted]);
+        if (set) fetchExperiments();
+    }, [set]);
 
     const startExam = () => {
         if (examContainerRef.current?.requestFullscreen) {
@@ -109,6 +114,7 @@ export default function Exam() {
         }
         setIsExamStarted(true);
     };
+
     const handleGoFullscreenButton = () => {
         if (examContainerRef.current?.requestFullscreen) {
             examContainerRef.current.requestFullscreen().catch((err) => {
@@ -119,18 +125,11 @@ export default function Exam() {
             alert("Fullscreen mode is not supported on this browser.");
         }
     };
-    
 
     const endExam = () => {
-        try {
-            setIsExamCompleted(true);
-            clearInterval(timerRef.current);
-            document.exitFullscreen?.().catch((err) => {
-                console.error("Failed to exit fullscreen:", err);
-            });
-        } catch (err) {
-            console.error("Error ending the exam:", err);
-        }
+        setIsExamCompleted(true);
+        clearInterval(timerRef.current);
+        document.exitFullscreen?.().catch((err) => console.error("Failed to exit fullscreen:", err));
     };
 
     const handleSubmit = () => {
@@ -170,7 +169,9 @@ export default function Exam() {
                         <p>Time Left: {formatTime(timeLeft)}</p>
                         <p>Tab Switch Count: {tabSwitchCount}</p>
                         {!isFullscreen && (
-                            <button style={{ background: "#007bff", color: "#fff" }} onClick={handleGoFullscreenButton}>Go Fullscreen</button>
+                            <button style={{ background: "#007bff", color: "#fff" }} onClick={handleGoFullscreenButton}>
+                                Go Fullscreen
+                            </button>
                         )}
                         <button onClick={handleSubmit} style={{ background: "#28a745", color: "#fff" }}>
                             Submit Exam

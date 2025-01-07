@@ -12,9 +12,9 @@ const root = createRoot(container);
 
 // Render your app using the root
 root.render(
-  <React.StrictMode>
+ 
     <App />
-  </React.StrictMode>
+ 
 );
 
 

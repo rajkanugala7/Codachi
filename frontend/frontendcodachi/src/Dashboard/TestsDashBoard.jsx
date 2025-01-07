@@ -1,35 +1,38 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Box, Text, Button, Flex, Spinner, Alert, AlertIcon } from "@chakra-ui/react";
+import { Box, Text, Button, Flex, Spinner, Alert, AlertIcon, Icon } from "@chakra-ui/react";
+import { CheckCircleIcon } from "@chakra-ui/icons";
 import axios from "axios";
 
 export default function TestsDashBoard() {
     const location = useLocation();
     const navigate = useNavigate();
-    const { classroomId, role,studentId } = location?.state || {}; // Get classroomId and role from route state
+    const { classroomId, role, studentId } = location?.state || {}; // Get classroomId, role, and studentId from route state
 
     const [testDetails, setTestDetails] = useState([]);
+    const [completedTestIds, setCompletedTestIds] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
     useEffect(() => {
         const fetchTests = async () => {
             try {
-                // Fetch classroom details to get test IDs
-                const response = await axios.get(`http://localhost:8080/api/classrooms/${classroomId}`);
-                const testIds = response.data.testIds;
+                const classroomResponse = await axios.get(`http://localhost:8080/api/classrooms/${classroomId}`);
+                const testIds = classroomResponse.data.testIds;
+
+                // Fetch completed tests only for students
+                if (role === "Student") {
+                    const studentResponse = await axios.get(`http://localhost:8080/api/students/student/${studentId}`);
+                    setCompletedTestIds(studentResponse.data.completedTestIds || []);
+                }
 
                 if (testIds.length > 0) {
-                    // Fetch each test's details by testId
                     const testResponses = await Promise.all(
-                        testIds.map(testId =>
+                        testIds.map((testId) =>
                             axios.get(`http://localhost:8080/api/exam/test/${testId}`)
-
-                            
                         )
                     );
-                    console.log(testResponses)
-                    setTestDetails(testResponses.map(res => res.data));
+                    setTestDetails(testResponses.map((res) => res.data));
                 }
             } catch (err) {
                 console.error("Error fetching test details:", err);
@@ -40,24 +43,24 @@ export default function TestsDashBoard() {
         };
 
         if (classroomId) fetchTests();
-    }, [classroomId]);
+    }, [classroomId, studentId, role]);
 
     const handleDetails = (test) => {
-        // Navigate to test details page
-        navigate("/test-details", { state: { test, classroomId } });
+        // Add logic if you want to navigate to a test details page
+        navigate("/testdetails", { state: { test: test, classroomId: classroomId}})
     };
 
     const handleStartExam = (test) => {
         if (test.sets && test.sets.length > 0) {
             const randomSet = test.sets[Math.floor(Math.random() * test.sets.length)];
-            console.log(randomSet)
-            navigate("/exam", { state: { set: randomSet.questions, test:test, classroomId:classroomId, studentId:studentId } });
+            navigate("/exam", {
+                state: { set: randomSet.questions, test, classroomId, studentId, setId: randomSet._id },
+            });
         } else {
             alert("No sets available for this test.");
         }
     };
     
-
     return (
         <Box className="testsPage" bg="#1A202C" color="white" minHeight="100vh" p={4}>
             <Text
@@ -125,14 +128,36 @@ export default function TestsDashBoard() {
                                 </Flex>
 
                                 <Flex gap={2} align="center">
+                                    {/* For Students */}
+                                    {role === "Student" && (
+                                        <>
+                                            {completedTestIds.includes(test._id) && (
+                                                <Icon as={CheckCircleIcon} color="green.400" boxSize={10} />
+                                            )}
+                                            {!completedTestIds.includes(test._id) && (
+                                                <Button
+                                                    colorScheme="teal"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleStartExam(test);
+                                                    }}
+
+                                                    padding={4}
+                                                >
+                                                    Start Exam
+                                                </Button>
+                                            )}
+                                        </>
+                                    )}
+
+                                    {/* For Teachers */}
                                     {role === "Teacher" && (
                                         <>
                                             <Button
                                                 colorScheme="yellow"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    // Navigate to edit test page
-                                                    navigate("/edit-test", { state: { test } });
+                                                    navigate("/edittest", { state: { test } });
                                                 }}
                                             >
                                                 Edit
@@ -141,14 +166,16 @@ export default function TestsDashBoard() {
                                                 colorScheme="red"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    // Delete test logic
                                                     if (window.confirm("Are you sure you want to delete this test?")) {
-                                                        axios.delete(`http://localhost:8080/api/exam/test/${test._id}`)
+                                                        axios
+                                                            .delete(`http://localhost:8080/api/exam/test/${test._id}`)
                                                             .then(() => {
-                                                                setTestDetails((prev) => prev.filter((t) => t._id !== test._id));
+                                                                setTestDetails((prev) =>
+                                                                    prev.filter((t) => t._id !== test._id)
+                                                                );
                                                                 alert("Test deleted successfully!");
                                                             })
-                                                            .catch((err) => {
+                                                            .catch(() => {
                                                                 alert("Error deleting test. Please try again.");
                                                             });
                                                     }
@@ -156,20 +183,16 @@ export default function TestsDashBoard() {
                                             >
                                                 Delete
                                             </Button>
+                                            <Button
+                      colorScheme="purple"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDetails(test);
+                      }}
+                    >
+                      Completion Details
+                    </Button>
                                         </>
-                                    )}
-
-                                    {role === "Student" && (
-                                        <Button
-                                            colorScheme="teal"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                // Navigate to start exam page
-                                                handleStartExam(test);
-                                            }}
-                                        >
-                                            Start Exam
-                                        </Button>
                                     )}
                                 </Flex>
                             </Box>

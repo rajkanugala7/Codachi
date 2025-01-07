@@ -1,19 +1,27 @@
-import { Box, Text, Button, Textarea, Input } from "@chakra-ui/react";
-import { useState } from "react"; // Import useState to manage state
+import { Box, Text, Button, Input } from "@chakra-ui/react";
+import { useState } from "react";
 import { executeCode } from "./api";
-import { useLocation } from "react-router-dom";
 import axios from "axios";
 
-export default function Output({ editorRef, language, testCases, expId, classroomId, studentId }) {
-  const location = useLocation();
+export default function Output({
+  editorRef,
+  language,
+  testCases,
+  expId,
+  classroomId,
+  studentId,
+  setId,
+  testId,
+  onComplete, // Correctly structured as part of props
+}) {
   const [output, setOutput] = useState(""); // State to store the output
   const [userInput, setUserInput] = useState(""); // State for user input
   const [isLoading, setIsLoading] = useState(false); // Loading state
   const [isError, setIsError] = useState(false); // Error state
-  const [inputBox, SetInputBox] = useState(false); // To control the custom input box visibility
+  const [inputBox, setInputBox] = useState(false); // To control the custom input box visibility
 
   const runCode = async () => {
-    const sourceCode = editorRef.current.getValue(); // Get the code from the editor
+    const sourceCode = editorRef?.current?.getValue(); // Safely access the editor's value
     if (!sourceCode) {
       setOutput("Please enter code to run."); // Handle empty code
       return;
@@ -25,44 +33,56 @@ export default function Output({ editorRef, language, testCases, expId, classroo
 
       let result;
 
-      // If custom input is enabled and user input exists, pass user input
       if (inputBox && userInput) {
-        result = await executeCode(language, sourceCode, userInput); // Pass only user input
+        result = await executeCode(language, sourceCode, userInput); // Pass user input
       } else {
-        // Otherwise, pass test cases
-        result = await executeCode(language, sourceCode, "", testCases); // Pass test cases if no custom input
+        result = await executeCode(language, sourceCode, "", testCases); // Pass test cases
       }
 
-      // Check the result from the API and update the output accordingly
       if (result) {
         setOutput(result.finalResult); // Set the final result as output
 
         if (result.finalResult === "Accepted") {
-          try {
-            const response = await axios.post(
-              `http://localhost:8080/api/experiments/${expId}`,
-              {
-                classroomId: classroomId,
-                studentId: studentId,
-              }
-            );
-            console.log("Response:", response.data); // Optional: log the response if needed
-          } catch (err) {
-            console.error("Error:", err);
+          if (setId === -1) {
+            try {
+              const response = await axios.post(
+                `http://localhost:8080/api/experiments/${expId}`,
+                {
+                  classroomId: classroomId,
+                  studentId: studentId,
+                }
+              );
+              console.log("Experiment completed:", response.data);
+               // Call onComplete if provided
+            } catch (err) {
+              console.error("Error completing experiment:", err);
+            }
+          } else if (setId) {
+            try {
+              const response = await axios.put(
+                `http://localhost:8080/api/exam/test/${testId}`,
+                {
+                  setId: setId,
+                  studentId: studentId,
+                  experimentId: expId,
+                  codeWritten: sourceCode,
+                }
+              );
+              console.log("Test completed:", response.data);
+              onComplete?.();
+            } catch (err) {
+              console.error("Error completing test:", err);
+            }
           }
         }
 
-        if (result.isError) {
-          setIsError(true);
-        } else {
-          setIsError(false);
-        }
+        setIsError(!!result.isError);
       } else {
         setOutput("No output received.");
       }
     } catch (err) {
       console.error("Error executing code:", err);
-      setOutput(`Error executing code: ${err.message}`); // Display error message in output
+      setOutput(`Error executing code: ${err.message}`);
       setIsError(true);
     } finally {
       setIsLoading(false);
@@ -76,25 +96,23 @@ export default function Output({ editorRef, language, testCases, expId, classroo
       </Text>
 
       {/* Checkbox for custom input */}
-      <input
-        type="checkbox"
-        id="inputBox"
-        onChange={() => {
-          SetInputBox(!inputBox);
-        }}
-      />
-      <label htmlFor="inputBox"> Custom input</label>
+      <label>
+        <input
+          type="checkbox"
+          onChange={() => setInputBox((prev) => !prev)}
+          checked={inputBox}
+        />
+        Custom Input
+      </label>
 
-      {/* Show textarea when custom input is enabled */}
+      {/* Show input box when custom input is enabled */}
       {inputBox && (
         <Input
           placeholder="Enter input here..."
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}
-          mt={2} // Margin top for spacing
-          size="sm" // Adjust size (optional)
-          resize="vertical" // Allow vertical resizing
-          rows={3} // Minimum number of rows visible
+          mt={2}
+          size="sm"
         />
       )}
 
@@ -105,21 +123,21 @@ export default function Output({ editorRef, language, testCases, expId, classroo
         isLoading={isLoading}
         mt={2}
       >
-        RUN
+        Run
       </Button>
 
       <Box
         border="1px solid"
-        borderRadius={4}
-        borderColor={isError ? "red.500" : "green"}
+        borderRadius="md"
+        borderColor={isError ? "red.500" : "green.500"}
         p={2}
-        mt={4} // Margin to space out the output box
-        minHeight="100px" // Ensure some space for the output
-        fontFamily="monospace" // Use a monospace font for code output
-        whiteSpace="pre-wrap" // Preserve formatting of output
-        overflowX="auto" // Allow horizontal scrolling if the output is long
+        mt={4}
+        minHeight="100px"
+        fontFamily="monospace"
+        whiteSpace="pre-wrap"
+        overflowX="auto"
       >
-        {output ? output : "No output yet"} {/* Show output or a placeholder */}
+        {output || "No output yet"}
       </Box>
     </Box>
   );

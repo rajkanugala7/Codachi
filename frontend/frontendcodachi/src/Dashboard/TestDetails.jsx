@@ -6,47 +6,61 @@ import axios from "axios";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function CompletionDetails() {
+export default function TestDetails() {
   const location = useLocation();
-  const experimentId = location?.state?.exp?._id || ""; // Fetch `exp._id` from state
+  const currTest = location?.state?.test; // Fetch `test` from state
   const classroomId = location?.state?.classroomId;
-  const className = location?.state?.className;
-  const students = location?.state?.students || [];
 
-  const [experiment, setExperiment] = useState(null);
+  const [test, setTest] = useState(null);
+  const [students, setStudents] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // Fetch experiment details from backend using `experimentId`
-    if (experimentId) {
+    if (currTest && classroomId) {
+      setLoading(true);
+        // Fetch test details
+        console.log(currTest)
       axios
-        .get(`https://codachi-1.onrender.com/api/experiments/exp/${experimentId}`) // Update this to your API endpoint
+        .get(`http://localhost:8080/api/exam/test/${currTest._id}`)
         .then((response) => {
-          setExperiment(response.data);
-          setLoading(false);
+          setTest(response.data);
         })
         .catch((err) => {
           console.error(err);
-          setError("Failed to fetch experiment details.");
+          setError("Failed to fetch test details.");
           setLoading(false);
+        });
+
+      // Fetch students
+      axios
+        .get(`https://codachi-1.onrender.com/api/students/${classroomId}`)
+        .then((response) => {
+            setStudents(response.data);
+            setLoading(false)
+        })
+        .catch((err) => {
+          console.error(err);
+          setError("Failed to fetch student details.");
         });
     } else {
       setLoading(false);
-      setError("Experiment ID is missing.");
+      setError("Test or classroom ID is missing.");
     }
-  }, [experimentId]);
+  }, [currTest, classroomId]);
 
   if (loading) return <div>Loading...</div>;
-  if (error || !experiment || !classroomId || students.length === 0) {
-    return <div>{error || "No experiment or classroom data available"}</div>;
+  if (error) return <div>{error}</div>;
+
+  if (!test || students.length === 0) {
+    return <div>No data available for this test or classroom.</div>;
   }
 
-  // Filter progress for the classroom
-  const progress = experiment.classroomProgress[classroomId] || [];
+  // Filter test submissions
+  const progress = test.testSubmissions || [];
 
-  // Filter completed and not completed students
+  // Separate completed and not completed students
   const completedStudentIds = new Set(progress.map((entry) => entry.studentId));
   const completedStudents = students.filter((student) =>
     completedStudentIds.has(student._id)
@@ -57,7 +71,7 @@ export default function CompletionDetails() {
 
   // Data for the doughnut chart
   const data = {
-    labels: ["Completed", "Not Completed"],
+    labels: ["Completed", "Not yet Completed"],
     datasets: [
       {
         label: "# of Students",
@@ -86,20 +100,25 @@ export default function CompletionDetails() {
     },
     onClick: (_, elements) => {
       if (elements.length > 0) {
-        const clickedIndex = elements[0].index; // Determine the slice clicked
+        const clickedIndex = elements[0].index;
         setSelectedCategory(clickedIndex === 0 ? "Completed" : "Not Completed");
       }
     },
   };
 
   return (
-    <div style={{ display: "flex", justifyContent: "space-evenly", backgroundColor:"#F0F0F7" , height:"100vh",padding:"1rem"}}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-evenly",
+        backgroundColor: "#F0F0F7",
+              height: "100vh",
+        padding:"1rem"
+      }}
+    >
       <div style={{ maxWidth: "40vw", textAlign: "center" }}>
-        <h3> Experiment: {experiment.name}</h3>
-        <p>
-          <strong>Classroom:</strong> {className}
-        </p>
-        <p>Experiment Completion Details</p>
+        <h3>{test.testName}</h3>
+        <p>Test Completion Details</p>
         <Doughnut data={data} options={options} />
       </div>
       <div style={{ maxWidth: "55vw" }}>
@@ -111,7 +130,7 @@ export default function CompletionDetails() {
                 ? completedStudents
                 : notCompletedStudents
               ).map((student) => (
-                <li key={student._id} className="listitem">
+                <li key={student._id } className="listitem">
                   <strong>{student.name}</strong> - {student.email}
                 </li>
               ))}

@@ -25,6 +25,11 @@ const StudentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Experiment',  // List of completed experiments
         default: []
+    }],
+    completedTestIds: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Test',  // List of completed tests
+        default: []
     }]
 });
 

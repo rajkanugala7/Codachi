@@ -17,22 +17,44 @@ const createStudent = async (req, res) => {
 // Update Student
 const updateStudent = async (req, res) => {
     const { id } = req.params;
-    const { name, email } = req.body; // Get name and email from request body
+    const { name, email, completedTestIds } = req.body; // Include completedTestIds in request body
+    console.log("Came here")
     try {
+        // Validate request body
+        if (!name && !email && !completedTestIds) {
+            return res.status(400).json({ error: "At least one of name, email, or completedTestIds must be provided." });
+        }
+
+        // Build update object dynamically
+        const updateFields = {
+            ...(name && { name }),
+            ...(email && { email }),
+            ...(completedTestIds && { completedTestIds }),
+        };
+
+        // Find and update the student by ID
         const student = await Student.findByIdAndUpdate(
             id,
-            { name, email }, // Update both name and email
-            { new: true } // Return the updated document
+            { $set: updateFields }, // Dynamically update provided fields
+            { new: true, runValidators: true } // Return updated doc, apply schema validations
         );
+
+
+
+       
         if (!student) {
-            return res.status(404).send("Student not found");
+            return res.status(404).json({ error: "Student not found." });
         }
-        res.status(200).json(student); // Send back the updated student
+
+        res.status(200).json({
+            message: "Student updated successfully.",
+            student,
+        });
     } catch (err) {
-        res.status(400).send(err.message);
+        console.error("Error updating student:", err.message);
+        res.status(500).json({ error: "An error occurred while updating the student." });
     }
 };
-
 
 // Delete Student
 const deleteStudent = async (req, res) => {

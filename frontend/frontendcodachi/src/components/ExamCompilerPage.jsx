@@ -1,6 +1,6 @@
-import React, { useState, useRef ,useEffect} from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Box, Flex, Textarea, Button } from "@chakra-ui/react";
+import { Box, Flex, Button,Textarea } from "@chakra-ui/react";
 import Editor from "@monaco-editor/react";
 import LanguageSelector from "./LanguageSelector";
 import { LANGUAGES } from "../constants"; // Assuming your language constants are in constants.js
@@ -8,34 +8,43 @@ import Output from "./Output";
 import axios from "axios";
 import { executeCode } from "./api"; // Assuming you have an API function to execute the code
 
-export default function ExamCompilerPage({ experiment, classroomId, studentId}) {
+export default function ExamCompilerPage({
+  experiment,
+  classroomId,
+  studentId,
+  setId,
+  testId,
+  onComplete
+}) {
   const [code, setCode] = useState(LANGUAGES["Java"].codeSnippet); // Initialize with Java code snippet
   const [language, setLanguage] = useState("Java");
   const [userInput, setUserInput] = useState(""); // State to store user input
   const [output, setOutput] = useState(""); // State to store output
   const location = useLocation();
+
+  const [testCases, setTestCases] = useState([]);
   
-  const [testCases,setTestCases]=useState([])
-  console.log("exp ", experiment);
-  console.log(studentId,"student")
+
   useEffect(() => {
     // Define an async function to fetch test cases
     const fetchTestCases = async () => {
       try {
-        const response = await axios.get(`https://codachi-1.onrender.com/api/testcases/${experiment._id}`);
+        const response = await axios.get(
+          `https://codachi-1.onrender.com/api/testcases/${experiment._id}`
+        );
         console.log("Fetched test cases:", response.data);
         setTestCases(response.data); // Store fetched test cases
       } catch (error) {
         console.error("Error fetching test cases:", error);
       }
     };
-  
+
     // Call the fetch function if experiment ID is available
     if (experiment._id) {
       fetchTestCases();
     }
   }, [experiment._id]); // Fetch again if experiment ID changes
-  
+
   const editorRef = useRef(null);
 
   const onMount = (editor) => {
@@ -80,12 +89,23 @@ export default function ExamCompilerPage({ experiment, classroomId, studentId}) 
   };
 
   // Function to execute the code with user input
+  const handleRunCode = async () => {
+    try {
+      const response = await executeCode({
+        code,
+        language,
+        userInput,
+        classroomId,
+        studentId,
+      });
+      setOutput(response.data.output);
+    } catch (error) {
+      console.error("Error executing code:", error);
+    }
+  };
 
   return (
     <Box className="compiler" bg="samurai.gray" color="samurai.white" h="90vh" p={4}>
-      
-    
-
       {/* Main Content: Problem Statement and Code Editor */}
       <Flex mt={4} h="calc(100vh - 100px)" ref={containerRef}>
         {/* Problem Statement */}
@@ -99,12 +119,8 @@ export default function ExamCompilerPage({ experiment, classroomId, studentId}) 
           p={4}
           overflowY="auto"
         >
-          <h2>{ experiment.name}</h2>
-          <p>
-            {experiment.problemStatement}
-           
-          </p>
-          {/* Add more content as needed */}
+          <h2>{experiment.name}</h2>
+          <p>{experiment.problemStatement}</p>
         </Box>
 
         {/* Resizable Divider */}
@@ -145,15 +161,21 @@ export default function ExamCompilerPage({ experiment, classroomId, studentId}) 
             onMount={onMount}
           />
 
-          {/* User Input Area */}
-        
-
-          {/* Run Button */}
-        
+         
 
           {/* Output Section */}
-          <Box mt={6} >
-            <Output editorRef={editorRef} language={language} testCases={testCases} expId={experiment._id} classroomId={classroomId} studentId={studentId} />
+          <Box mt={6}>
+            <Output
+              editorRef={editorRef}
+              language={language}
+              testCases={testCases}
+              expId={experiment._id}
+              classroomId={classroomId}
+              studentId={studentId}
+              setId={setId}
+              testId={testId}
+              onComplete={onComplete}
+            />
           </Box>
         </Box>
       </Flex>

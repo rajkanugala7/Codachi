@@ -5,7 +5,7 @@ import ExamCompilerPage from "../components/ExamCompilerPage";
 
 export default function Exam() {
     const location = useLocation();
-    const { set, test, classroomId, studentId } = location?.state || {};
+    const { set, test, classroomId, studentId, setId } = location?.state || {};
     const [experiments, setExperiments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -15,6 +15,7 @@ export default function Exam() {
     const [tabSwitchCount, setTabSwitchCount] = useState(0);
     const [selectedExperiment, setSelectedExperiment] = useState(null);
     const [isFullscreen, setIsFullscreen] = useState(false);
+    const [completedExperiments, setCompletedExperiments] = useState(new Set()); // Track completed experiments
 
     const examContainerRef = useRef(null);
     const timerRef = useRef(null);
@@ -105,16 +106,36 @@ export default function Exam() {
         if (set) fetchExperiments();
     }, [set]);
 
-    const startExam = () => {
+    const startExam = async () => {
         if (examContainerRef.current?.requestFullscreen) {
             examContainerRef.current.requestFullscreen().catch((err) => {
                 console.error("Fullscreen request failed:", err);
                 alert("Failed to enter fullscreen mode. Please try again.");
             });
         }
+    
+        try {
+            // Fetch the current student data to get the existing completedTestIds
+            const { data: student } = await axios.get(`http://localhost:8080/api/students/student/${studentId}`);
+            const updatedCompletedTestIds = new Set(student.completedTestIds); // Use a Set to avoid duplicates
+            updatedCompletedTestIds.add(test._id);
+    
+            // Update the student's completedTestIds in the backend
+            await axios.put(`http://localhost:8080/api/students/${studentId}`, {
+                completedTestIds: Array.from(updatedCompletedTestIds), // Convert the Set back to an array
+            });
+    
+            console.log("Test ID added to student's completedTestIds.");
+        } catch (error) {
+            console.error("Error updating student's completedTestIds:", error);
+            alert("Failed to update student's exam status. Please try again.");
+            return;
+        }
+    
         setIsExamStarted(true);
     };
-
+    
+  
     const handleGoFullscreenButton = () => {
         if (examContainerRef.current?.requestFullscreen) {
             examContainerRef.current.requestFullscreen().catch((err) => {
@@ -138,7 +159,7 @@ export default function Exam() {
             alert("Exam submitted successfully.");
         }
     };
-
+    console.log(test)
     const formatTime = (time) => {
         const minutes = Math.floor(time / 60);
         const seconds = time % 60;
@@ -147,6 +168,10 @@ export default function Exam() {
 
     const handleExperimentClick = (index) => {
         setSelectedExperiment(experiments[index]);
+    };
+
+    const markExperimentAsCompleted = (experimentId) => {
+        setCompletedExperiments((prev) => new Set(prev).add(experimentId));
     };
 
     if (loading) return <p>Loading experiments...</p>;
@@ -160,8 +185,14 @@ export default function Exam() {
                         <h2>Exam completed. Thank you!</h2>
                     </div>
                 ) : (
-                    <button onClick={startExam}>Start Exam</button>
-                )
+                        <div style={{border:"1px solid black", width:"25vw", padding:"2rem" , justifyItems:"center", borderRadius:"1rem" ,position:"relative", left:"35vw", top:"30vh"} }>   
+                            <strong>{test.testName}</strong>
+                            <p>Time limit : { test.timeLimit}</p>
+                            
+                            
+                    <button onClick={startExam} style={{backgroundColor:"teal", padding:"1rem" , borderRadius:"1rem" ,color:"white" , width:"20vw"}}>Start Exam</button>
+                     </div>
+                            )
             ) : (
                 <div>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -169,11 +200,11 @@ export default function Exam() {
                         <p>Time Left: {formatTime(timeLeft)}</p>
                         <p>Tab Switch Count: {tabSwitchCount}</p>
                         {!isFullscreen && (
-                            <button style={{ background: "#007bff", color: "#fff" }} onClick={handleGoFullscreenButton}>
+                            <button style={{ background: "#007bff", color: "#fff",padding:"1rem" , borderRadius:"1rem"}} onClick={handleGoFullscreenButton}>
                                 Go Fullscreen
                             </button>
                         )}
-                        <button onClick={handleSubmit} style={{ background: "#28a745", color: "#fff" }}>
+                        <button onClick={handleSubmit} style={{ background: "#28a745", color: "#fff" ,padding:"1rem", borderRadius:"1rem"}}>
                             Submit Exam
                         </button>
                     </div>
@@ -189,8 +220,12 @@ export default function Exam() {
                                         height: "40px",
                                         borderRadius: "50%",
                                         border: selectedExperiment === experiment ? "2px solid #007bff" : "2px solid #000",
-                                        background: selectedExperiment === experiment ? "#007bff" : "#fff",
-                                        color: selectedExperiment === experiment ? "#fff" : "#000",
+                                        background: completedExperiments.has(experiment._id)
+                                            ? "green"
+                                            : selectedExperiment === experiment
+                                            ? "#007bff"
+                                            : "#fff",
+                                        color: completedExperiments.has(experiment._id) || selectedExperiment === experiment ? "#fff" : "#000",
                                     }}
                                 >
                                     {index + 1}
@@ -200,11 +235,15 @@ export default function Exam() {
                             <p>No experiments found.</p>
                         )}
                     </div>
+
                     {selectedExperiment && (
                         <ExamCompilerPage
                             experiment={selectedExperiment}
                             classroomId={classroomId}
                             studentId={studentId}
+                            setId={setId}
+                            testId={test._id}
+                            onComplete={() => markExperimentAsCompleted(selectedExperiment._id)}
                         />
                     )}
                 </div>

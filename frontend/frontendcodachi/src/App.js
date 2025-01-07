@@ -116,6 +116,8 @@ import CompletionDetails from "./Dashboard/CompletionDetails";
 import CreateExam from "./CRUDForms/CreateExam";
 import TestsDashBoard from "./Dashboard/TestsDashBoard";
 import Exam from "./Dashboard/Exam";
+import EditTest from "./CRUDForms/EditTest";
+import TestDetails from "./Dashboard/TestDetails";
 
 function App() {
   
@@ -243,8 +245,11 @@ function App() {
                   <Route path="students" element={<Students />} />
                   <Route path="newtest" element={<CreateExam/>} />
                   <Route path="tests" element={<TestsDashBoard/>}/>
-                  
+                   
                   <Route path="exam" element={<Exam/>}/>
+                  <Route path="edittest" element={<EditTest/>}/>
+                  
+                  <Route path="testdetails" element={<TestDetails/>}/>
                   
         </Routes>
       </Router>

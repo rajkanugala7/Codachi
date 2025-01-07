@@ -70,23 +70,77 @@ exports.getTestById = async (req, res) => {
     }
 };
 
-// Update a test by ID
 exports.updateTest = async (req, res) => {
     try {
-        const { testName, activeStatus, sets, testExpireTime, startTime, timeLimit } = req.body;
-        const updatedTest = await Test.findByIdAndUpdate(
-            req.params.id,
-            { testName, activeStatus, sets, testExpireTime, startTime, timeLimit },
-            { new: true }
-        );
+        const {
+            testName,
+            activeStatus,
+            sets,
+            testExpireTime,
+            startTime,
+            timeLimit,
+            setId,
+            studentId,
+            experimentId,
+            codeWritten,
+            
+        } = req.body;
 
-        if (!updatedTest) return res.status(404).json({ message: 'Test not found' });
+        // Find the test by ID
+        const test = await Test.findById(req.params.id);
+
+        if (!test) {
+            return res.status(404).json({ message: 'Test not found' });
+        }
+
+        // Update test fields if provided
+        if (testName) test.testName = testName;
+        if (activeStatus !== undefined) test.activeStatus = activeStatus;
+        if (sets) test.sets = sets;
+        if (testExpireTime) test.testExpireTime = testExpireTime;
+        if (startTime) test.startTime = startTime;
+        if (timeLimit) test.timeLimit = timeLimit;
+
+        // If setId is not -1 and result is Accepted, update test submissions
+        if (setId !== '-1') {
+            const submission = test.testSubmissions.find(
+                (sub) => sub.studentId.toString() === studentId && sub.setId.toString() === setId
+            );
+
+            if (submission) {
+                // Check if the experiment already exists
+                const experimentIndex = submission.codes.findIndex(
+                    (code) => code.experimentId.toString() === experimentId
+                );
+
+                if (experimentIndex !== -1) {
+                    // Update existing experiment's code
+                    submission.codes[experimentIndex].codeWritten = codeWritten;
+                } else {
+                    // Add new experiment with code
+                    submission.codes.push({ experimentId, codeWritten });
+                }
+            } else {
+                // Add new test submission if it doesn't exist
+                test.testSubmissions.push({
+                    studentId,
+                    setId,
+                    codes: [{ experimentId, codeWritten }],
+                });
+            }
+        }
+
+        // Save updated test document
+        const updatedTest = await test.save();
 
         res.status(200).json(updatedTest);
     } catch (error) {
+        console.error('Error updating test:', error);
         res.status(500).json({ message: 'Failed to update test', error });
     }
 };
+
+
 
 // Delete a test by ID
 exports.deleteTest = async (req, res) => {

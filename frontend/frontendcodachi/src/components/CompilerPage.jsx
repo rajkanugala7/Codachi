@@ -83,7 +83,7 @@ export default function CompilerPage() {
 
   return (
     <Box className="compiler" bg="samurai.gray" color="samurai.white" h="100vh" p={4}>
-      {/* Navbar */}
+      
     
 
       {/* Main Content: Problem Statement and Code Editor */}
@@ -153,7 +153,7 @@ export default function CompilerPage() {
 
           {/* Output Section */}
           <Box mt={4}>
-            <Output editorRef={editorRef} language={language} testCases={testCases} expId={experiment._id} classroomId={classroomId} studentId={studentId} />
+            <Output editorRef={editorRef} language={language} testCases={testCases} expId={experiment._id} classroomId={classroomId} studentId={studentId} setId={-1}/>
           </Box>
         </Box>
       </Flex>

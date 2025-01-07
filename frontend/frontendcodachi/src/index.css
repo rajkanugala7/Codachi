@@ -704,3 +704,17 @@ opacity: 0.5;
   font-size: 36px;
   line-height: 1;
 }
+.listitem{
+      list-style: none;
+      background-color: #f8f8f2;
+      padding: 1.5rem;
+      margin: 3px;
+      border-radius: 1rem;
+
+}
+
+.listDiv{
+   padding: 1rem;
+   height: 85vh;
+   overflow: scroll;
+}

@@ -25,7 +25,7 @@ const ExperimentSchema = new Schema({
             },
             completedAt: {
                 type: Date,
-                default: Date.now // Automatically store completion timestamp
+                default: Date.now 
             }
         }],
         default: {} // Initialize the map as an empty object

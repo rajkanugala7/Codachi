@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { Button, Select, MenuItem, TextField, Typography } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -10,6 +10,7 @@ const theme = createTheme();
 export default function CreateExam() {
     const location = useLocation();
     const { experiments = [], classroomId } = location?.state || {};
+    const navigate = useNavigate();
 
     const [sets, setSets] = useState([{ id: 1, questions: [] }]);
     const [selectedExperiments, setSelectedExperiments] = useState({});
@@ -83,7 +84,7 @@ export default function CreateExam() {
             };
 
             const testResponse = await axios.post("http://localhost:8080/api/exam/test", testData);
-            console.log("Test created successfully:", testResponse.data);
+            navigate("/tests",{state:{classroomId:classroomId, role:"Teacher"}});
         } catch (error) {
             console.error("Error creating test:", error);
         } finally {

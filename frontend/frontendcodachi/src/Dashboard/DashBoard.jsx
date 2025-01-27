@@ -79,6 +79,7 @@ const Dashboard = () => {
   return (
     <div>
       
+      <p style={{ fontSize: "1.8rem", backgroundColor: "#575799", height: "13vh", borderRadius: "1rem", padding: "1rem", fontWeight: "600", color: "white", margin:"1rem", alignItems:"center"}}>Welcome , {user?.name }  </p>
 
       {classrooms.length > 0 ? (
         <div>

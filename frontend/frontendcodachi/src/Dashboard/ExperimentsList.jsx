@@ -90,7 +90,7 @@ export default function ExperimentList() {
       </Text>
 
       {role === "Teacher" && (
-        <div>
+        <div className="btnexam">
         <Button
           colorScheme="blue"
           onClick={handleAddExperiment}
@@ -100,7 +100,7 @@ export default function ExperimentList() {
         >
           Add a New Experiment
           </Button>
-        <Button onClick={handleExam}>Create an Exam</Button>
+        <Button onClick={handleExam} className="">Create an Exam</Button>
         </div>
       )}
 

@@ -7,7 +7,8 @@ export default function LabsDashboard() {
 
   // Extract state from navigation
   const { labs = [], classroomId, teacherId, className, studentCount, students } = location.state || {};
-
+   
+  console.log(teacherId,"teacherid")
   // Sample images array
   const images = [
     "https://cdn.vectorstock.com/i/2000v/67/59/female-character-work-as-technical-support-vector-39826759.avif",

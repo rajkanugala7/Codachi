@@ -125,7 +125,6 @@ const deleteTeacher = async (req, res) => {
         // Remove teacher from labs where referenced
         await Lab.updateMany({ teacher: id }, { $unset: { teacher: "" } });
 
-        await teacher.remove();
 
         res.json({ message: "Teacher deleted successfully" });
     } catch (err) {

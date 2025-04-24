@@ -142,7 +142,7 @@ function App() {
     },
     {
         name: "Reverse the Number",
-        statement: "Given an integer, return the reverse of the number. Example: Input '123' should return Output '321'.",
+        statement: "Given an integer return the reverse of the number. Example: Input '123' should return Output '321'.",
         testCases: [
             { input: "123", output: "321" },
             { input: "-456", output: "-654" },

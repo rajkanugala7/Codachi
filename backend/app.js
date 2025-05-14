@@ -428,6 +428,21 @@ app.use('/api/experiments', experimentRoutes);
 app.use('/api/testcases', testCaseRoutes);
 app.use('/api/exam', ExamRoutes)
 
+app.get('/oauth/callback', (req, res) => {
+  const authorizationCode = req.query.code;
+  const state = req.query.state;
+
+  // Log the authorization code and state for debugging
+  console.log('Authorization Code:', authorizationCode);
+  console.log('State:', state);
+
+  // Here you would typically exchange the authorization code for tokens
+  // For example, make a POST request to the token endpoint
+
+  res.send('OAuth callback received. Check the server logs for details.');
+});
+
+
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
